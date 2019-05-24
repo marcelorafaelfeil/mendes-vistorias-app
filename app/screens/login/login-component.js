@@ -1,28 +1,31 @@
 import React from 'react';
 import {
-	Text,
-	View,
-	Alert,
-	StyleSheet,
 	Image,
 	Keyboard,
-	TextInput,
+	KeyboardAvoidingView,
 	SafeAreaView,
+	StyleSheet,
+	Text,
+	TextInput,
 	TouchableOpacity,
 	TouchableWithoutFeedback,
-	KeyboardAvoidingView
+	View
 } from 'react-native';
 
 export class LoginComponent extends React.Component {
 	_doAuth() {
 		// fetch();
-		this.props.navigation.navigate('DashboardScreen');
-		// Alert.alert('Login ou senha incorretos'); 
+		this.props.navigation.navigate('Dashboard');
+		// Alert.alert('Login ou senha incorretos');
 	}
 
 	render() {
 		return (
-			<KeyboardAvoidingView style={styles.content} behavior='padding' enabled>
+			<KeyboardAvoidingView
+				style={styles.content}
+				behavior='padding'
+				enabled
+			>
 				<SafeAreaView style={styles.flex}>
 					<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 						<View style={styles.flex}>

@@ -7,6 +7,7 @@ import { HomeScreen } from '../screens/home-screen/home-screen';
 import { InspectionScreen } from '../screens/inspection-screen/inspection-screen';
 import { RecomendationScreen } from '../screens/recomendation-screen/recomendation-screen';
 import { RisksScreen } from '../screens/risks-screen/risks-screen';
+import { Platform } from 'expo-core';
 
 const CameraCircleIcon = props => {
 	return <CircleIcon {...props} />;
@@ -18,7 +19,7 @@ const DefaultIcon = props => {
 
 export const InspectionTabNavigator = createBottomTabNavigator(
 	{
-		Home: {
+		Início: {
 			screen: HomeScreen
 		},
 		Geral: {
@@ -36,24 +37,27 @@ export const InspectionTabNavigator = createBottomTabNavigator(
 		}
 	},
 	{
-		initialRouteName: 'Home',
+		initialRouteName: 'Início',
+		initialRouteParams: {
+			id: 42
+		},
 		defaultNavigationOptions: ({ navigation }) => ({
 			tabBarIcon: ({ focused, horizontal, tintColor }) => {
 				const { routeName } = navigation.state;
 				let IconComponent = DefaultIcon;
 				let iconName;
 
-				if (routeName === 'Home') {
-					iconName = 'ios-home';
+				if (routeName === 'Início') {
+					iconName = Platform.OS === 'ios' ? 'ios-home' : 'md-home';
 				} else if (routeName === 'Geral') {
-					iconName = 'ios-apps';
+					iconName = Platform.OS === 'ios' ? 'ios-apps' : 'md-apps';
 				} else if (routeName === 'Inspeção') {
-					iconName = 'ios-camera';
+					iconName = Platform.OS === 'ios' ? 'ios-camera' : 'md-camera';
 					IconComponent = CameraCircleIcon;
 				} else if (routeName === 'Riscos') {
-					iconName = 'ios-warning';
+					iconName = Platform.OS === 'ios' ? 'ios-warning' : 'md-warning';
 				} else if (routeName === 'Recomendações') {
-					iconName = 'ios-chatbubbles';
+					iconName = Platform.OS === 'ios' ? 'ios-chatbubbles' : 'md-chatbubbles';
 				}
 
 				return (

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Font } from 'expo';
-import { View, Text, StyleSheet } from 'react-native';
-import { Loading } from '../../components/loading/Loading';
+import { StyleSheet, Text, View } from 'react-native';
+import { LoadFontService } from '../../services/fonts/load-font-service';
+import { Loading } from '../loading/loading';
 
 export class ListItem extends React.Component {
 
@@ -9,15 +9,7 @@ export class ListItem extends React.Component {
 		loaded: false
 	};
 
-	componentWillMount() {
-		this._loadFontAsync();
-	}
-
-	_loadFontAsync = async () => {
-		await Font.loadAsync({
-			Roboto: require('../../../assets/fonts/Roboto-Regular.ttf')
-		});
-
+	async componentWillMount() {
 		this.setState({
 			loaded: true
 		});
@@ -38,7 +30,7 @@ export class ListItem extends React.Component {
 		return (
 			<View style={styles.item}>
 				<View style={styles.nameAndAddress}>
-					<Text numberOfLines={1}>{this.props.label}</Text>
+					<Text numberOfLines={1} style={styles.label}>{this.props.label}</Text>
 					<Text numberOfLines={1} style={styles.description}>{this.props.description}</Text>
 				</View>
 				<View style={styles.timeToExpire}>
@@ -61,8 +53,12 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		backgroundColor: '#FFFFFF'
 	},
+	label: {
+		fontFamily: 'Roboto'
+	},
 	description: {
-		color: '#CCCCCC'
+		color: '#CCCCCC',
+		fontFamily: 'Roboto'
 	},
 	nameAndAddress: {
 		maxWidth: 225

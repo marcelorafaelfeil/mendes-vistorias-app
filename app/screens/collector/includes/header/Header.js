@@ -4,11 +4,9 @@ import { Text, View, StyleSheet, SafeAreaView } from 'react-native';
 export class Header extends React.Component {
 	render() {
 		return(
-			<SafeAreaView>
-				<View style={styles.contentHeader}>
-					<Text style={styles.textHeader}>{this.props.children}</Text>
-				</View>
-			</SafeAreaView>
+			<View style={styles.contentHeader}>
+				<Text style={styles.textHeader}>{this.props.children}</Text>
+			</View>
 		);
 	}
 }
@@ -19,7 +17,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 10
 	},
 	textHeader: {
-		fontFamily: 'Arial',
+		fontFamily: 'Roboto',
 		fontSize: 16,
 		fontWeight: 'bold',
 		textTransform: 'uppercase',

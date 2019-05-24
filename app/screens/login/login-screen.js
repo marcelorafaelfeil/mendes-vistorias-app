@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginComponent } from './LoginComponent';
+import { LoginComponent } from './login-component';
 
 export class LoginScreen extends React.Component {
 	static navigationOptions = {

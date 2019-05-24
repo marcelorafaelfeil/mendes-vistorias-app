@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import { Header } from '../../../includes/header/Header';
+import { Header } from '../../../includes/header/header';
 
 export class InspectionScreen extends React.Component {
     render() {

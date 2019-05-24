@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Header } from '../includes/header/Header';
+import { Header } from '../includes/header/header';
 
 export class HomeScreen extends React.Component {
 	static navigationOptions = {

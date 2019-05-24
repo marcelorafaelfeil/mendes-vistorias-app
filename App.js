@@ -1,29 +1,34 @@
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import AppContext from './app/core/AppContext';
-import { AppContainer } from './app/core/navigation/AppContainer';
+import { CustomSafeView } from './app/components/custom-safe-view';
+import { Loading } from './app/components/loading/loading';
+import { AppContainer } from './app/core/navigation/app-container';
+import { LoadFontService } from './app/services/fonts/load-font-service';
 
 export default class App extends React.Component {
+	state = {
+		loaded: 1
+	}
+
+	async componentWillMount() {
+		await LoadFontService.loadRoboto();
+		await LoadFontService.loadOpenSans();
+
+		this.setState({
+			loaded: this.state.loaded - 1
+		});
+	}
+
 	render() {
+		if (this.state.loaded > 0) {
+			return(<Loading />);
+		}
 		return (
-			<View style={styles.mainContainer}>
-				<AppContext.Provider>
+			<ActionSheetProvider>
+				<CustomSafeView>
 					<AppContainer />
-				</AppContext.Provider>
-			</View>
+				</CustomSafeView>
+			</ActionSheetProvider>
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	mainContainer: {
-		flex: 1,
-		backgroundColor: '#F6F6F6'
-	},
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center'
-	}
-});

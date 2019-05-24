@@ -1,4 +1,4 @@
-var moment = require('moment');
+import moment from 'moment';
 
 export class FormatDashboardData {
 	_data = [];
@@ -39,15 +39,16 @@ export class FormatDashboardData {
 
 	getTimeDiff(dateMajor, dateMinor) {
 		// Calcula a quantidade de tempo que a tarefa está atrasada
-		dateMinor = moment(dateMinor);
-		dateMajor = moment(dateMajor);
+		const dMinor = moment(dateMinor);
+		const dMajor = moment(dateMajor);
 
-		const diffMinutes = dateMajor.diff(dateMinor, 'minutes');
-		const diffHours = dateMajor.diff(dateMinor, 'hours');
-		const diffDays = dateMajor.diff(dateMinor, 'days');
+		const diffMinutes = dMajor.diff(dMinor, 'minutes');
+		const diffHours = dMajor.diff(dMinor, 'hours');
+		const diffDays = dMajor.diff(dMinor, 'days');
 		var quantity = diffMinutes;
 		var minutes = diffMinutes;
 		var unit = 'minutos';
+		// alert(`${dMajor.format('DD/MM/YYYY')} = ${dMinor.format('DD/MM/YYYY')}`);
 
 		if (diffMinutes < -60 && diffHours >= -24) {
 			quantity = diffHours;

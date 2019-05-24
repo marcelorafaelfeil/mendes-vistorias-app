@@ -1,15 +1,65 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
-import { Header } from '../../../includes/header/Header';
+import { ActivityIndicator, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { ContainerComponent } from '../../../../../components/container-component';
+import { PendenciesService } from '../../../../../services/rest/pendencies-service';
+import { Header } from '../../../includes/header/header';
+import { Address } from './address';
+import { Client } from './client';
 
 export class HomeScreen extends React.Component {
+	state = {
+		loaded: false,
+		pendency: {}
+	};
+
+	async componentDidMount() {
+		await PendenciesService.getPendency(
+			this.props.navigation.getParam('id')
+		).then(response => {
+			this.setState({
+				pendency: response
+			});
+		});
+
+		this.setState({
+			loaded: true
+		});
+	}
+
 	render() {
+		const { pendency } = this.state;
+
+		if (!this.state.loaded) {
+			return (
+				<View
+					style={{
+						flex: 1,
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}
+				>
+					<ActivityIndicator />
+				</View>
+			);
+		}
+
 		return (
-			<SafeAreaView>
-				<Header>Home</Header>
-				<Text>Olá mundo!</Text>
-			</SafeAreaView>
+			<ScrollView>
+				<ContainerComponent>
+					{!!pendency && (
+						<View>
+							<Header>Início</Header>
+							{pendency.client && (
+								<Client data={pendency.client} />
+							)}
+							{pendency.client && pendency.client.address && (
+								<Address data={pendency.client.address} />
+							)}
+						</View>
+					)}
+				</ContainerComponent>
+			</ScrollView>
 		);
 	}
 }

@@ -13,7 +13,7 @@ export class CircleIcon extends React.Component {
 					margin: 5,
 					marginTop: -8,
 					backgroundColor: focused ? '#049778' : '#07E5B7',
-					borderRadius: '100%',
+					borderRadius: 999,
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}
