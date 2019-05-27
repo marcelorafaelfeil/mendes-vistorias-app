@@ -1,8 +1,18 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { View, Text } from 'react-native';
 
 export class Loading extends React.Component {
 	render() {
-		return <Text>Carregando...</Text>;
+		return (
+			<View
+				style={{
+					flex: 1,
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}
+			>
+				<Text>Carregando...</Text>
+			</View>
+		);
 	}
 }

@@ -1,14 +1,13 @@
 import React from 'react';
-import { View, Text, Linking } from 'react-native';
-import { PanelComponent } from '../../../../../components/panel-component';
-import { SectionTitleComponent } from '../../../../../components/section-title-component';
-import { LabelComponent } from '../../../../../components/label-component';
+import { Text, View } from 'react-native';
 import { ButtonComponent } from '../../../../../components/button-component';
+import { LabelComponent } from '../../../../../components/label-component';
+import { PanelComponent } from '../../../../../components/panel-component';
 import { RowComponent } from '../../../../../components/row-component';
-import { BindVariable } from '../../../../../utils/bind-variable';
+import { SectionTitleComponent } from '../../../../../components/section-title-component';
+import { OpenLinksUtils } from '../../../../../utils/open-links';
 
 export class Address extends React.Component {
-	wazeUrl = 'https://waze.com/ul?q={address}';
 	address = '';
 
 	componentDidMount() {
@@ -26,17 +25,7 @@ export class Address extends React.Component {
 	}
 
 	openMap() {
-		const url = BindVariable.bind(this.wazeUrl, { address: this.address });
-		Linking.canOpenURL(url).then((supported) => {
-			if (supported) {
-				Linking.openURL(url).catch(err => {
-					console.error('An error occurred', err);
-					alert('Não foi possível abrir esse endereço no waze.');
-				});
-			} else {
-				alert('Não foi possível abrir o endereço no waze. Verifique se o aplicativo está instalado.');
-			}
-		}).catch(err => alert('Não foi possível abrir esse aplicativo.'));
+		OpenLinksUtils.openWazeByAddress(this.address);
 	}
 
 	render() {

@@ -1,9 +1,9 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import React from 'react';
-import { CustomSafeView } from './app/components/custom-safe-view';
 import { Loading } from './app/components/loading/loading';
 import { AppContainer } from './app/core/navigation/app-container';
 import { LoadFontService } from './app/services/fonts/load-font-service';
+import ThemeContext from './app/core/theme-context';
 
 export default class App extends React.Component {
 	state = {
@@ -25,9 +25,7 @@ export default class App extends React.Component {
 		}
 		return (
 			<ActionSheetProvider>
-				<CustomSafeView>
-					<AppContainer />
-				</CustomSafeView>
+				<AppContainer />
 			</ActionSheetProvider>
 		);
 	}

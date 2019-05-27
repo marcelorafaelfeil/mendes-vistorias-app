@@ -1,11 +1,12 @@
 import React from 'react';
-import { connectActionSheet} from '@expo/react-native-action-sheet';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 import { Linking, Text, View } from 'react-native';
 import { ButtonComponent } from '../../../../../components/button-component';
 import { LabelComponent } from '../../../../../components/label-component';
 import { PanelComponent } from '../../../../../components/panel-component';
 import { RowComponent } from '../../../../../components/row-component';
 import { SectionTitleComponent } from '../../../../../components/section-title-component';
+import { OpenLinksUtils } from '../../../../../utils/open-links';
 
 @connectActionSheet
 export class Client extends React.Component {
@@ -22,24 +23,10 @@ export class Client extends React.Component {
 			},
 			buttonIndex => {
 				if (buttonIndex >= 1) {
-					Linking.openURL(`tel:${phones[buttonIndex - 1]}`);
+					OpenLinksUtils.openCallPhone(phones[buttonIndex - 1]);
 				}
 			}
 		);
-		/* if (Platform.OS === 'ios') {
-			ActionSheetIOS.showActionSheetWithOptions(
-				{
-					options: ['Cancelar', ...phones],
-					cancelButtonIndex: 0
-				},
-				buttonIndex => {
-					if (buttonIndex >= 1) {
-						Linking.openURL(`tel:${phones[buttonIndex - 1]}`);
-					}
-				}
-			);
-		} else {
-		} */
 	}
 
 	render() {
@@ -82,7 +69,13 @@ export class Client extends React.Component {
 						</ButtonComponent>
 					</View>
 					<View style={{ flex: 1, margin: 5, marginRight: 0 }}>
-						<ButtonComponent>Enviar E-mail</ButtonComponent>
+						<ButtonComponent
+							onPress={() =>
+								OpenLinksUtils.openSendMail(data.email)
+							}
+						>
+							Enviar E-mail
+						</ButtonComponent>
 					</View>
 				</View>
 			</View>

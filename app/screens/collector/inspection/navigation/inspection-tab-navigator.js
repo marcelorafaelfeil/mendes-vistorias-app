@@ -8,6 +8,7 @@ import { InspectionScreen } from '../screens/inspection-screen/inspection-screen
 import { RecomendationScreen } from '../screens/recomendation-screen/recomendation-screen';
 import { RisksScreen } from '../screens/risks-screen/risks-screen';
 import { Platform } from 'expo-core';
+import { Config } from '../../../../core/config';
 
 const CameraCircleIcon = props => {
 	return <CircleIcon {...props} />;
@@ -37,7 +38,7 @@ export const InspectionTabNavigator = createBottomTabNavigator(
 		}
 	},
 	{
-		initialRouteName: 'Início',
+		initialRouteName: Config.INSPECTION_INICIAL_SCREEN,
 		initialRouteParams: {
 			id: 42
 		},

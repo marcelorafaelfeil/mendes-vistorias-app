@@ -1,11 +1,13 @@
+import { Platform } from 'expo-core';
 import React from 'react';
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { ContainerComponent } from '../../../components/container-component';
 import { CustomSafeView } from '../../../components/custom-safe-view';
 import { ListItem } from '../../../components/list/list-item';
+import { CustomActivityIndicatorComponent } from '../../../components/loading/custom-activity-indicator-component';
 import { PendenciesService } from '../../../services/rest/pendencies-service';
 import { GetData } from '../../../utils/get-data';
 import { Header } from '../includes/header/header';
-import { Platform } from 'expo-core';
 
 export class DashboardScreen extends React.Component {
 	static navigationOptions = {
@@ -66,32 +68,30 @@ export class DashboardScreen extends React.Component {
 
 	render() {
 		if (this.state.loaded > 0) {
-			return (
-				<View style={styles.loader}>
-					<ActivityIndicator size='large' color='#0c9' />
-				</View>
-			);
+			return <CustomActivityIndicatorComponent />;
 		} else {
 			return (
 				<CustomSafeView>
-					<Header>Dashboard</Header>
-					<ScrollView style={styles.content}>
-						{this.renderPendencies(
-							'Inspeções atrasadas',
-							'danger',
-							this.state.latePendencies
-						)}
-						{this.renderPendencies(
-							'Inspeções a vencer',
-							'warning',
-							this.state.deadlinePendencies
-						)}
-						{this.renderPendencies(
-							'Novas inspeções',
-							'success',
-							this.state.newPendencies
-						)}
-					</ScrollView>
+					<ContainerComponent>
+						<Header>Dashboard</Header>
+						<ScrollView style={styles.content}>
+							{this.renderPendencies(
+								'Inspeções atrasadas',
+								'danger',
+								this.state.latePendencies
+							)}
+							{this.renderPendencies(
+								'Inspeções a vencer',
+								'warning',
+								this.state.deadlinePendencies
+							)}
+							{this.renderPendencies(
+								'Novas inspeções',
+								'success',
+								this.state.newPendencies
+							)}
+						</ScrollView>
+					</ContainerComponent>
 				</CustomSafeView>
 			);
 		}
@@ -100,9 +100,8 @@ export class DashboardScreen extends React.Component {
 
 const styles = StyleSheet.create({
 	content: {
-		padding: 15,
 		paddingTop: 0,
-		marginBottom: Platform.OS === 'ios' ? 40 : 0
+		marginBottom: Platform.OS === 'ios' ? 0 : 0
 	},
 	loader: {
 		flex: 1,

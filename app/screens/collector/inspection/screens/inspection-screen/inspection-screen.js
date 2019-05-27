@@ -1,15 +1,15 @@
 import React from 'react';
 import { Text } from 'react-native';
-import { SafeAreaView } from 'react-navigation';
+import { CustomSafeView } from '../../../../../components/custom-safe-view';
 import { Header } from '../../../includes/header/header';
 
 export class InspectionScreen extends React.Component {
-    render() {
+	render() {
 		return (
-			<SafeAreaView>
+			<CustomSafeView>
 				<Header>Inspecionar</Header>
 				<Text>Olá mundo!</Text>
-			</SafeAreaView>
+			</CustomSafeView>
 		);
-    }
+	}
 }
