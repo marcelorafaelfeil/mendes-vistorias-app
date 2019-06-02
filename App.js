@@ -3,7 +3,6 @@ import React from 'react';
 import { Loading } from './app/components/loading/loading';
 import { AppContainer } from './app/core/navigation/app-container';
 import { LoadFontService } from './app/services/fonts/load-font-service';
-import ThemeContext from './app/core/theme-context';
 
 export default class App extends React.Component {
 	state = {

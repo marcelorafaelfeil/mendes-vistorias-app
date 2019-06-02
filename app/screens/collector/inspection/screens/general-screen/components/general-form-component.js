@@ -8,7 +8,9 @@ export class GeneralFormComponent extends React.PureComponent {
 		return(
 			<View>
 				<LabelComponent>Expediente</LabelComponent>
-				<InputTimeRange />
+				<InputTimeRange 
+				placeholderFrom={'00:00'}
+				placeholderTo={'00:00'} />
 			</View>
 		);
 	}

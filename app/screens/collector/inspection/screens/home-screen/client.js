@@ -64,12 +64,16 @@ export class Client extends React.Component {
 					}}
 				>
 					<View style={{ flex: 1, margin: 5, marginLeft: 0 }}>
-						<ButtonComponent onPress={() => this.openPhoneList()}>
+						<ButtonComponent
+							status={'info'}
+							onPress={() => this.openPhoneList()}
+						>
 							Ligar
 						</ButtonComponent>
 					</View>
 					<View style={{ flex: 1, margin: 5, marginRight: 0 }}>
 						<ButtonComponent
+							status={'info'}
 							onPress={() =>
 								OpenLinksUtils.openSendMail(data.email)
 							}
