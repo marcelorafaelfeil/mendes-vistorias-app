@@ -1,6 +1,7 @@
 import { API, TEMP_TOKEN } from '../../core/api-context';
 import { FormatDashboardData } from '../../screens/collector/dashboard/format-dashboard-data';
 import { BindVariable } from '../../utils/bind-variable';
+import { PendencyValidation } from '../validation/pendency-validation';
 
 export class PendenciesService {
 	static getMyPendencies = () => {
@@ -41,4 +42,9 @@ export class PendenciesService {
 				console.error('err: ', err);
 			});
 	};
+
+	static savePendency = (data) => {
+		const validation = new PendencyValidation(data);
+		validation.validateGeneralData();
+	}
 }

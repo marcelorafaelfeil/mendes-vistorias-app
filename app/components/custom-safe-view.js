@@ -7,8 +7,7 @@ export class CustomSafeView extends React.PureComponent {
 		return (
 			<SafeAreaView
 				style={{
-					flex: 1,
-					paddingTop: Platform.OS === 'android' ? 10 : 0,
+					paddingTop: Platform.OS === 'android' ? 20 : 0,
 					backgroundColor: '#f6f6f6'
 				}}
 			>

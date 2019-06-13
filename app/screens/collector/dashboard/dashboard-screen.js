@@ -1,6 +1,13 @@
 import { Platform } from 'expo-core';
 import React from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import {
+	FlatList,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableHighlight,
+	View
+} from 'react-native';
 import { ContainerComponent } from '../../../components/container-component';
 import { CustomSafeView } from '../../../components/custom-safe-view';
 import { ListItem } from '../../../components/list/list-item';
@@ -72,9 +79,9 @@ export class DashboardScreen extends React.Component {
 		} else {
 			return (
 				<CustomSafeView>
-					<ContainerComponent>
-						<Header>Dashboard</Header>
-						<ScrollView style={styles.content}>
+					<ScrollView style={styles.content}>
+						<ContainerComponent>
+							<Header>Dashboard</Header>
 							{this.renderPendencies(
 								'Inspeções atrasadas',
 								'danger',
@@ -90,8 +97,8 @@ export class DashboardScreen extends React.Component {
 								'success',
 								this.state.newPendencies
 							)}
-						</ScrollView>
-					</ContainerComponent>
+						</ContainerComponent>
+					</ScrollView>
 				</CustomSafeView>
 			);
 		}

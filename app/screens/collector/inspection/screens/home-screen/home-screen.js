@@ -17,7 +17,7 @@ export class HomeScreen extends React.Component {
 
 	async componentDidMount() {
 		await PendenciesService.getPendency(
-			this.props.navigation.getParam('id')
+			this.props.navigation.getParam('inspection')
 		).then(response => {
 			this.setState({
 				pendency: response

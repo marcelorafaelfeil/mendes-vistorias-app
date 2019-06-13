@@ -8,8 +8,9 @@ export class LoadFontService {
 	};
 
 	static loadRoboto = async () => {
-		return  Font.loadAsync({
+		return Font.loadAsync({
 			Roboto: require('../../../assets/fonts/Roboto-Regular.ttf')
 		});
-	}
+	};
+
 }

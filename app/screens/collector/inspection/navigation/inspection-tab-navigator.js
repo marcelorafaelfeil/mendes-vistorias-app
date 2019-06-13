@@ -40,7 +40,7 @@ export const InspectionTabNavigator = createBottomTabNavigator(
 	{
 		initialRouteName: Config.INSPECTION_INICIAL_SCREEN,
 		initialRouteParams: {
-			id: 42
+			inspection: 42
 		},
 		defaultNavigationOptions: ({ navigation }) => ({
 			tabBarIcon: ({ focused, horizontal, tintColor }) => {

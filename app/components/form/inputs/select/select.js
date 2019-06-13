@@ -1,0 +1,123 @@
+import { Platform } from 'expo-core';
+import React from 'react';
+import { Text, TouchableHighlight, View, Modal, Picker } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { theme } from '../../../../theme/mendes-light';
+import { ButtonComponent } from '../../../button-component';
+
+export class Select extends React.Component {
+	state = {
+		isModalVisible: false,
+		value: null,
+		originalValue: null
+	};
+
+	openSelectOptions() {
+		this.setState({
+			isModalVisible: true
+		});
+	}
+
+	selectOption() {
+		if (!!this.props.onSelect) {
+			this.props.onSelect(this.state.value);
+		}
+		this.setState({
+			isModalVisible: false,
+			originalValue: this.state.value
+		});
+	}
+
+	closeModal() {
+		this.setState({
+			value: this.state.originalValue,
+			isModalVisible: false
+		});
+	}
+
+	render() {
+		const options = !!this.props.options ? this.props.options : [];
+		return (
+			<View>
+				<TouchableHighlight onPress={() => this.openSelectOptions()}>
+					<View style={[theme.input, theme.select]}>
+						<Text style={theme.primaryColor} numberOfLines={1}>
+							{!!this.state.originalValue
+								? this.state.originalValue.label
+								: this.props.placeholder}
+						</Text>
+						<Icon
+							name={
+								Platform.OS === 'ios'
+									? 'ios-arrow-down'
+									: 'md-arrow-dropdown'
+							}
+							size={25}
+							style={theme.selectIcon}
+						/>
+					</View>
+				</TouchableHighlight>
+				<Modal
+					visible={this.state.isModalVisible}
+					transparent={true}
+					animationType={'fade'}
+				>
+					<View style={theme.selectContentModal}>
+						<View style={theme.selectModal}>
+							<Text
+								style={[
+									{
+										textAlign: 'center'
+									},
+									theme.textSubheader
+								]}
+							>
+								{!!this.props.modalTitle
+									? this.props.modalTitle
+									: 'Selecione a cidade'}
+							</Text>
+							<Picker
+								selectedValue={!!this.state.value ? this.state.value.value : null}
+								onValueChange={(itemValue, itemIndex) => {
+									this.setState({ value: options[itemIndex] });
+								}}
+							>
+								{options.map((o, index) => (
+									<Picker.Item
+										key={index}
+										label={o.label}
+										value={o.value}
+									/>
+								))}
+							</Picker>
+
+							<View
+								style={{
+									display: 'flex',
+									flexDirection: 'row'
+								}}
+							>
+								<View style={{ flex: 1, marginRight: 5 }}>
+									<ButtonComponent
+										status={'default'}
+										onPress={() => this.closeModal()}
+									>
+										Cancelar
+									</ButtonComponent>
+								</View>
+								<View style={{ flex: 1, marginLeft: 5 }}>
+									<ButtonComponent
+										primary
+										onPress={() => this.selectOption()}
+									>
+										Confirmar
+									</ButtonComponent>
+								</View>
+							</View>
+						</View>
+					</View>
+				</Modal>
+			</View>
+		);
+	}
+}

@@ -27,4 +27,26 @@ export class GetData {
 		}
 		return address;
 	}
+
+	static hoursInNumber(date) {
+		const hours = date.getHours();
+		const minutes = date.getMinutes();
+		const convertToMinutes = (hours * 60) + minutes;
+		return convertToMinutes;
+	}
+
+	static numberInHoursToString(date) {
+		const hours = Math.floor(date/60);
+		const minutes = date % 60;
+		return `${hours}:${minutes}`;
+	}
+
+	static numberInHoursToDate(date) {
+		const hours = Math.floor(date/60);
+		const minutes = date % 60;
+		const newDate = new Date();
+		newDate.setHours(hours);
+		newDate.setMinutes(minutes);
+		return newDate;
+	}
 }

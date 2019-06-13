@@ -16,17 +16,22 @@ export class InputTimeRange extends React.Component {
 	state = {
 		field: '',
 		isTimeModalVisible: false,
-		chosenIOSTime: new Date(),
+		chosenTime: new Date(),
 		timeFrom: null,
 		timeTo: null
 	};
 
 	constructor(props) {
 		super(props);
-		this.setIOSDate = this.setIOSDate.bind(this);
+		this.setDate = this.setDate.bind(this);
 	}
 
-	componentDidUpdate() {}
+	componentWillMount() {
+		this.setState({
+			timeFrom: !!this.props.valueFrom ? this.props.valueFrom : null,
+			timeTo: !!this.props.valueTo ? this.props.valueTo : null
+		});
+	}
 
 	async open(field) {
 		var placeholder =
@@ -37,10 +42,10 @@ export class InputTimeRange extends React.Component {
 				: this.state.timeTo !== null
 				? this.state.timeTo
 				: new Date();
-		this.setState({ field, chosenIOSTime: placeholder });
+		this.setState({ field, chosenTime: placeholder });
 
 		if (Platform.OS === 'android') {
-			var {action, hour, minute} = await TimePickerAndroid.open({
+			var { action, hour, minute } = await TimePickerAndroid.open({
 				mode: 'clock',
 				is24Hour: true,
 				hour: placeholder.getHours(),
@@ -50,26 +55,32 @@ export class InputTimeRange extends React.Component {
 			if (action !== TimePickerAndroid.dismissedAction) {
 				var time = new Date();
 				time.setHours(hour);
-				time.setMinutes(minute)
+				time.setMinutes(minute);
 				this.setState({
-					chosenIOSTime: time
+					chosenTime: time
 				});
-				this.chosenIOSTime();
+				this.chosenTime();
 			}
 		} else if (Platform.OS === 'ios') {
 			this.openTimeModal();
 		}
 	}
 
-	chosenIOSTime() {
+	chosenTime() {
 		if (this.state.field === 'from') {
 			this.setState({
-				timeFrom: this.state.chosenIOSTime
+				timeFrom: this.state.chosenTime
 			});
+			if (!!this.props.onChangeFrom) {
+				this.props.onChangeFrom(this.state.chosenTime);
+			}
 		} else if (this.state.field === 'to') {
 			this.setState({
-				timeTo: this.state.chosenIOSTime
+				timeTo: this.state.chosenTime
 			});
+			if (!!this.props.onChangeTo) {
+				this.props.onChangeTo(this.state.chosenTime);
+			}
 		}
 		this.setState({
 			isTimeModalVisible: false
@@ -84,16 +95,16 @@ export class InputTimeRange extends React.Component {
 		this.setState({ isTimeModalVisible: false });
 	}
 
-	setIOSDate(newDate) {
-		this.setState({ chosenIOSTime: newDate });
+	setDate(newDate) {
+		this.setState({ chosenTime: newDate });
 	}
 
 	render() {
 		return (
 			<View>
-				<View style={{ display: 'flex', flexDirection: 'row' }}>
+				<View style={theme.inputGroup}>
 					<TouchableWithoutFeedback onPress={() => this.open('from')}>
-						<View style={[theme.inputGroup, theme.inputRange]}>
+						<View style={[theme.inputGroupItem, theme.inputRange]}>
 							<Text style={theme.inputTextRange}>
 								{this.state.timeFrom !== null
 									? GetData.getTime(this.state.timeFrom)
@@ -110,7 +121,7 @@ export class InputTimeRange extends React.Component {
 						<Text style={theme.inputGroupLabelText}>às</Text>
 					</View>
 					<TouchableWithoutFeedback onPress={() => this.open('to')}>
-						<View style={[theme.inputGroup, theme.inputRange]}>
+						<View style={[theme.inputGroupItem, theme.inputRange]}>
 							<Text style={theme.inputTextRange}>
 								{this.state.timeTo !== null
 									? GetData.getTime(this.state.timeTo)
@@ -136,8 +147,8 @@ export class InputTimeRange extends React.Component {
 									Selecione a hora
 								</Text>
 								<DatePickerIOS
-									date={this.state.chosenIOSTime}
-									onDateChange={this.setIOSDate}
+									date={this.state.chosenTime}
+									onDateChange={this.setDate}
 									mode={'time'}
 								/>
 								<View
@@ -158,7 +169,7 @@ export class InputTimeRange extends React.Component {
 									</View>
 									<View style={{ flex: 1, marginLeft: 5 }}>
 										<ButtonComponent
-											onPress={() => this.chosenIOSTime()}
+											onPress={() => this.chosenTime()}
 											primary
 										>
 											Confirmar

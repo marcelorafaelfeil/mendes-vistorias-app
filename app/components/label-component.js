@@ -16,13 +16,15 @@ export class LabelComponent extends React.PureComponent {
 		return (
 			<Text
 				style={{
-					fontFamily: 'OpenSansSemiBold',
+					fontFamily: 'Roboto',
+					fontSize: 9,
 					textTransform: 'uppercase',
-					fontSize: 10,
-					color: '#CCC'
+					color: '#CCC',
+					paddingBottom: 2
 				}}
+				numberOfLines={1}
 			>
-				{this.props.children}
+				{this.props.children.toUpperCase()}
 			</Text>
 		);
 	}
