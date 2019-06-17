@@ -1,62 +1,68 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { TextInputMask } from 'react-native-masked-text';
 import { InputDate } from '../../../../../../components/form/inputs/date/input-date';
+import { Select } from '../../../../../../components/form/inputs/select/select';
 import { InputText } from '../../../../../../components/form/inputs/text/input-text';
 import { InputTimeRange } from '../../../../../../components/form/inputs/time/input-time-range';
+import { Time } from '../../../../../../components/form/inputs/time/time';
 import { LabelComponent } from '../../../../../../components/label-component';
+import { CustomActivityIndicatorComponent } from '../../../../../../components/loading/custom-activity-indicator-component';
 import { theme } from '../../../../../../theme/mendes-light';
-import { GetData } from '../../../../../../utils/get-data';
-import { Select } from '../../../../../../components/form/inputs/select/select';
+import { NoteRisksService } from './note-risks.service';
 
 export class GeneralFormComponent extends React.PureComponent {
 	state = {
-		constructionAmount: 0
+		constructionAmount: 0,
+		loaded: false,
+		form: {}
 	};
 
-	componentWillMount() {
+	async componentWillMount() {
 		const data = this.props.data;
 
 		this.setState({
-			expedientFrom: !!data.expedient_from
-				? GetData.numberInHoursToDate(data.expedient_from)
-				: '',
-			expedientTo: !!data.expedient_to
-				? GetData.numberInHoursToDate(data.expedient_to)
-				: '',
-			employeesQuantity: !!data.employees_quantity
-				? data.employees_quantity.toString()
-				: '0',
-			buildDate: !!data.build_date ? new Date(data.build_date) : null
+			form: data,
+			loaded: true
 		});
 	}
 
+	handleFormChange = (value, name) => {
+		var formattedValue = value;
+		if (value instanceof Time) {
+			formattedValue = value.getHoursInNumber();
+		} else if (value instanceof Date) {
+			formattedValue = value.getTime();
+		} else if (/^\d+$/.test(value) && (name !== 'phone' && name !== 'cellPhone' && name !== 'inspectorCPF')) {
+			formattedValue = parseInt(value);
+		}
+		this.setState(state => ({
+			form: {
+				...state.form,
+				[name]: value
+			}
+		}));
+		this.props.onChange(formattedValue, name);
+	};
+
 	render() {
-		const data = this.props.data;
-		const options = [{label: '01A002 - Academia de ginastica/dança/lutas/escola de natação ou esportes', value: 1}, {label: '425216 - Açougue/Peixaria', value: 2}, {label: '002253 - Açucar, usina sem produção de álcool', value: 3}, {label: '004066 - Adubos - Depósito', value: 4}, {label: '004065 - Adubos - Lojas', value: 5}, {label: '006018 - Ag. bancárias/lojas ou coop. de crédito/casa de câmbio', value: 6}];
+		const optionsRisks = this.props.optionsRisks;
+		if (!this.state.loaded) {
+			return <CustomActivityIndicatorComponent />;
+		}
 		return (
 			<View>
-				<Select placeholder={'Selecione uma rubrica'} options={options} />
 				<View style={theme.row}>
 					<View style={theme.column}>
 						<LabelComponent>Expediente</LabelComponent>
 						<InputTimeRange
-							valueFrom={this.state.expedientFrom}
-							valueTo={this.state.expedientTo}
-							onChangeFrom={text => {
-								this.setState({ expedientFrom: text });
-								this.props.onChange(
-									GetData.hoursInNumber(text),
-									'expedient_from'
-								);
-							}}
-							onChangeTo={text => {
-								this.setState({ expedientTo: text });
-								this.props.onChange(
-									GetData.hoursInNumber(text),
-									'expedient_to'
-								);
-							}}
+							valueFrom={this.state.form.expedientFrom}
+							valueTo={this.state.form.expedientTo}
+							onChangeFrom={t =>
+								this.handleFormChange(t, 'expedientFrom')
+							}
+							onChangeTo={t =>
+								this.handleFormChange(t, 'expedientTo')
+							}
 						/>
 					</View>
 				</View>
@@ -65,42 +71,33 @@ export class GeneralFormComponent extends React.PureComponent {
 						<LabelComponent>Nº de Funcionários</LabelComponent>
 						<InputText
 							keyboardType="decimal-pad"
-							value={this.state.employeesQuantity}
-							onChangeText={text => {
-								this.setState({ employeesQuantity: text });
-								this.props.onChange(
-									parseInt(text),
-									'employees_quantity'
-								);
-							}}
+							value={this.state.form.employeesQuantity.toString()}
+							align="center"
+							onChangeText={t =>
+								this.handleFormChange(t, 'employeesQuantity')
+							}
 						/>
 					</View>
 					<View style={theme.column}>
 						<LabelComponent>Área Terreno (m²)</LabelComponent>
 						<InputText
 							keyboardType="decimal-pad"
-							value={this.state.groundSize}
-							onChangeText={text => {
-								this.setState({ groundSize: text });
-								this.props.onChange(
-									parseInt(text),
-									'ground_size'
-								);
-							}}
+							value={this.state.form.groundSize.toString()}
+							align="center"
+							onChangeText={t =>
+								this.handleFormChange(t, 'groundSize')
+							}
 						/>
 					</View>
 					<View style={theme.column}>
 						<LabelComponent>Área Construída (m²)</LabelComponent>
 						<InputText
 							keyboardType="decimal-pad"
-							value={this.state.builtArea}
-							onChangeText={text => {
-								this.setState({ builtArea: text });
-								this.props.onChange(
-									parseInt(text),
-									'built_area'
-								);
-							}}
+							value={this.state.form.builtArea.toString()}
+							align="center"
+							onChangeText={t =>
+								this.handleFormChange(t, 'builtArea')
+							}
 						/>
 					</View>
 				</View>
@@ -108,35 +105,38 @@ export class GeneralFormComponent extends React.PureComponent {
 					<View style={theme.column6}>
 						<LabelComponent>No Local Desde</LabelComponent>
 						<InputDate
-							valueAsDate={this.state.buildDate}
-							onChange={date => {
-								this.setState({ buildDate: date });
-								this.props.onChange(
-									date.getTime(),
-									'build_date'
-								);
-							}}
+							valueAsInteger={this.state.form.builtDate}
+							onChangeCalendar={t =>
+								this.handleFormChange(t, 'builtDate')
+							}
+							onChangeManual={t =>
+								this.handleFormChange(t, 'builtDate')
+							}
 						/>
 					</View>
 					<View style={theme.column}>
 						<LabelComponent>Idade Construção (Anos)</LabelComponent>
 						<InputText
 							keyboardType="decimal-pad"
-							value={this.state.builtArea}
-							onChangeText={text => {
-								this.setState({ builtArea: text });
-								this.props.onChange(
-									parseInt(text),
-									'build_age'
-								);
-							}}
+							value={this.state.form.builtAge.toString()}
+							align="center"
+							onChangeText={t =>
+								this.handleFormChange(t, 'builtAge')
+							}
 						/>
 					</View>
 				</View>
 				<View style={theme.row}>
 					<View style={theme.column}>
 						<LabelComponent>Nº de Pavimentos</LabelComponent>
-						<InputText keyboardType="decimal-pad" />
+						<InputText
+							value={this.state.form.quantityOfPaviments.toString()}
+							onChangeText={t =>
+								this.handleFormChange(t, 'quantityOfPaviments')
+							}
+							align="center"
+							keyboardType="decimal-pad"
+						/>
 					</View>
 					<View style={theme.column6}>
 						<LabelComponent>Valor da Construção</LabelComponent>
@@ -152,19 +152,14 @@ export class GeneralFormComponent extends React.PureComponent {
 								</Text>
 							</View>
 							<View style={theme.inputGroupItem}>
-								<TextInputMask
-									type={'money'}
-									value={''}
-									options={{
-										unit: ''
-									}}
-									value={this.state.constructionAmount}
-									onChangeText={text => {
-										this.setState({
-											constructionAmount: text
-										});
-									}}
-									style={theme.input}
+								<InputText
+									align="center"
+									keyboardType="numeric"
+									caretHidden={true}
+									value={this.state.form.builtAmount}
+									onChangeText={t =>
+										this.handleFormChange(t, 'builtAmount')
+									}
 								/>
 							</View>
 						</View>
@@ -172,8 +167,37 @@ export class GeneralFormComponent extends React.PureComponent {
 				</View>
 				<View style={theme.row}>
 					<View style={theme.column}>
+						<LabelComponent>
+							Atividade Comercial no Local
+						</LabelComponent>
+						<Select
+							placeholder={'Selecione'}
+							options={[
+								{ label: 'Não', value: 0 },
+								{ label: 'Sim', value: 1 }
+							]}
+							value={this.state.form.comercialLocalActivity}
+							onSelect={t =>
+								this.handleFormChange(
+									t,
+									'comercialLocalActivity'
+								)
+							}
+						/>
+					</View>
+					<View style={theme.column}>
 						<LabelComponent>Condição</LabelComponent>
-						<InputText />
+						<Select
+							placeholder={'Selecione'}
+							options={[
+								{ label: 'Proprietário', value: 0 },
+								{ label: 'Locatário', value: 1 }
+							]}
+							value={this.state.form.condition}
+							onSelect={t =>
+								this.handleFormChange(t, 'condition')
+							}
+						/>
 					</View>
 				</View>
 				<View style={theme.row}>
@@ -181,23 +205,135 @@ export class GeneralFormComponent extends React.PureComponent {
 						<LabelComponent>
 							Nome de quem acompanhou a IR
 						</LabelComponent>
-						<InputText />
+						<InputText
+							value={this.state.form.nameIRFollower}
+							onChangeText={t =>
+								this.handleFormChange(t, 'nameIRFollower')
+							}
+						/>
 					</View>
 				</View>
 				<View style={theme.row}>
 					<View style={theme.column}>
 						<LabelComponent>Função / Cargo</LabelComponent>
-						<InputText />
+						<InputText
+							value={this.state.form.function}
+							onChangeText={t =>
+								this.handleFormChange(t, 'function')
+							}
+						/>
 					</View>
 				</View>
 				<View style={theme.row}>
 					<View style={theme.column}>
 						<LabelComponent>Telefone</LabelComponent>
-						<InputText keyboardType={'phone-pad'} />
+						<InputText
+							value={this.state.form.phone}
+							keyboardType="phone-pad"
+							onChangeText={t =>
+								this.handleFormChange(t, 'phone')
+							}
+						/>
 					</View>
 					<View style={theme.column}>
 						<LabelComponent>Celular</LabelComponent>
-						<InputText keyboardType={'phone-pad'} />
+						<InputText
+							value={this.state.form.cellPhone}
+							keyboardType="phone-pad"
+							onChangeText={t =>
+								this.handleFormChange(t, 'cellPhone')
+							}
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>CPF Vistoriador</LabelComponent>
+						<InputText
+							value={this.state.form.inspectorCPF}
+							keyboardType="numeric"
+							onChangeText={t =>
+								this.handleFormChange(t, 'inspectorCPF')
+							}
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>Nome do Vistoriador</LabelComponent>
+						<InputText
+							value={this.state.form.inspectorName}
+							onChangeText={t =>
+								this.handleFormChange(t, 'inspectorName')
+							}
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>
+							Data de Realização da IR
+						</LabelComponent>
+						<InputDate
+							valueAsInteger={this.state.form.irDate}
+							onChangeCalendar={t =>
+								this.handleFormChange(t, 'irDate')
+							}
+							onChangeManual={t =>
+								this.handleFormChange(t, 'irDate')
+							}
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>Rubrica do Risco</LabelComponent>
+						<Select
+							options={optionsRisks}
+							onSelect={t => this.handleFormChange(t, 'riskItem')}
+							value={this.state.form.riskItem}
+							placeholder="Selecione uma rubrica"
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>Atividade do Local</LabelComponent>
+						<InputText
+							value={this.state.form.localActivity}
+							onChangeText={t =>
+								this.handleFormChange(t, 'localActivity')
+							}
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>
+							Conceito / Nota do Risco
+						</LabelComponent>
+						<Select
+							options={NoteRisksService.RISKS_OPTIONS}
+							onSelect={t => this.handleFormChange(t, 'riskNote')}
+							value={this.state.form.riskNote}
+							placeholder="Selecione uma nota de risco"
+						/>
+					</View>
+				</View>
+				<View style={theme.row}>
+					<View style={theme.column}>
+						<LabelComponent>
+							Justificativa Técnica do Parecer
+						</LabelComponent>
+						<InputText
+							value={this.state.form.technicalJustification}
+							onChangeText={t =>
+								this.handleFormChange(
+									t,
+									'technicalJustification'
+								)
+							}
+						/>
 					</View>
 				</View>
 			</View>

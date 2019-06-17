@@ -12,6 +12,7 @@ import { TextInputMask } from 'react-native-masked-text';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../../../theme/mendes-light';
 import { ButtonComponent } from '../../../button-component';
+import { GetData } from '../../../../utils/get-data';
 
 export class InputDate extends React.PureComponent {
 	state = {
@@ -26,9 +27,15 @@ export class InputDate extends React.PureComponent {
 	}
 
 	componentWillMount() {
+		var value;
+		if (!!this.props.valueAsInteger) {
+			value = new Date(this.props.valueAsInteger);
+		} else if (!!this.props.valueAsDate) {
+			value = this.valueAsDate;
+		}
 		this.setState({
-			chosenIOSDate: !!this.props.valueAsDate ? this.props.valueAsDate : new Date(),
-			value: !!this.props.valueAsDate ? this.props.valueAsDate.toLocaleDateString() : ''
+			chosenIOSDate: !!value ? value : new Date(),
+			value: !!value ? value.toLocaleDateString() : ''
 		});
 	}
 
@@ -45,8 +52,8 @@ export class InputDate extends React.PureComponent {
 					value: date.toLocaleDateString(),
 					chosenIOSDate: date
 				});
-				if (!!this.props.onChange) {
-					this.props.onChange(this.state.chosenIOSDate);
+				if (!!this.props.onChangeCalendar) {
+					this.props.onChangeCalendar(this.state.chosenIOSDate);
 				}
 			}
 		} else if (Platform.OS === 'ios') {
@@ -70,8 +77,8 @@ export class InputDate extends React.PureComponent {
 		this.setState({
 			value: this.state.chosenIOSDate.toLocaleDateString()
 		});
-		if (!!this.props.onChange) {
-			this.props.onChange(this.state.chosenIOSDate);
+		if (!!this.props.onChangeCalendar) {
+			this.props.onChangeCalendar(this.state.chosenIOSDate);
 		}
 		this.closeModal();
 	}
@@ -101,6 +108,8 @@ export class InputDate extends React.PureComponent {
 					<View style={theme.inputGroupItem}>
 						<TextInputMask
 							type={'datetime'}
+							returnKeyType={'done'}
+							keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
 							options={{
 								format: 'DD/MM/YYYY'
 							}}
@@ -109,6 +118,7 @@ export class InputDate extends React.PureComponent {
 								this.setState({
 									value: text
 								});
+								this.props.onChangeManual(GetData.stringToDate(text));
 							}}
 							style={theme.input}
 							{...this.props}

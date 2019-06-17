@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, SafeAreaView } from 'react-native';
 export class Header extends React.Component {
 	render() {
 		return(
-			<View style={styles.contentHeader}>
+			<View style={[styles.contentHeader, {paddingBottom: (!!this.props.noPaddingBottom) ? 0 : 10}]}>
 				<Text style={styles.textHeader}>{this.props.children}</Text>
 			</View>
 		);
@@ -14,7 +14,6 @@ export class Header extends React.Component {
 const styles = StyleSheet.create({
 	contentHeader: {
 		paddingTop: 10,
-		paddingBottom: 10
 	},
 	textHeader: {
 		fontFamily: 'Roboto',

@@ -1,12 +1,14 @@
 import '@firebase/firestore';
-import * as firebase from 'firebase';
 import React from 'react';
+import { AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ContainerComponent } from '../../../../../components/container-component';
 import { CustomSafeView } from '../../../../../components/custom-safe-view';
+import { CustomActivityIndicatorComponent } from '../../../../../components/loading/custom-activity-indicator-component';
+import { RisksService } from '../../../../../services/rest/risks-service';
 import { Header } from '../../../includes/header/header';
 import { GeneralFormComponent } from './components/general-form-component';
-import { Loading } from '../../../../../components/loading/loading';
+import { GeneralDataService } from './services/general-data-service';
 
 export class GeneralScreen extends React.Component {
 	state = {
@@ -14,8 +16,6 @@ export class GeneralScreen extends React.Component {
 		data: {},
 		loaded: false
 	};
-	db = firebase.firestore();
-	inspection = this.db.collection('inspection');
 
 	constructor(props) {
 		super(props);
@@ -23,67 +23,66 @@ export class GeneralScreen extends React.Component {
 	}
 
 	async componentWillMount() {
-		const data = {};
-		/* const data = await this.inspection
-			.doc(`inspection-${this.state.inspection}`)
-			.get()
-			.then(doc => {
-				if (doc.exists) {
-					return doc.data();
-				}
-				return {};
-			})
-			.catch(err => {
-				console.error(err);
-			}); */
+		var data = await AsyncStorage.getItem(
+			`geleral@form@${this.state.inspection}`
+		);
+
+		const optionsRisks = await RisksService.getRisks().then(data => {
+			return data;
+		});
 		this.setState({
+			optionsRisks,
 			loaded: true,
-			data: data
+			data: !!data
+				? GeneralDataService.parse(JSON.parse(data))
+				: GeneralDataService.DEFAULT_VALUE
 		});
 	}
 
-	saveData(data, field) {
-		/* this.inspection
-			.doc(`inspection-${this.state.inspection}`)
-			.get()
-			.then(doc => {
-				if (!doc.exists) {
-					this.inspection
-						.doc(`inspection-${this.state.inspection}`)
-						.set({
-							[field]: data
-						});
-				} else {
-					this.inspection
-						.doc(`inspection-${this.state.inspection}`)
-						.update({
-							[field]: data
-						});
+	saveData(value, name) {
+		this.state.data[name] = value;
+		this.setState(
+			state => ({
+				data: {
+					...state.data,
+					[name]: value
 				}
-			})
-			.catch(e => {
-				console.error(
-					'Erro interno ao verificar se dados da inspeção já existem.',
-					e
+			}),
+			() => {
+				AsyncStorage.setItem(
+					`geleral@form@${this.state.inspection}`,
+					JSON.stringify(this.state.data)
 				);
-			}); */
+			}
+		);
 	}
 
 	render() {
 		if (!this.state.loaded) {
-			return <Loading />;
+			return <CustomActivityIndicatorComponent />;
 		} else {
 			return (
 				<CustomSafeView>
-					<ScrollView>
-						<ContainerComponent>
-							<Header>Geral</Header>
-							<GeneralFormComponent
-								data={this.state.data}
-								onChange={this.saveData}
-							/>
-						</ContainerComponent>
-					</ScrollView>
+					<KeyboardAvoidingView
+						style={{
+							flex: 1,
+							flexDirection: 'column',
+							justifyContent: 'center'
+						}}
+						behavior="padding"
+						enabled
+					>
+						<ScrollView>
+							<ContainerComponent>
+								<Header>Geral</Header>
+								<GeneralFormComponent
+									optionsRisks={this.state.optionsRisks}
+									data={this.state.data}
+									onChange={this.saveData}
+								/>
+							</ContainerComponent>
+						</ScrollView>
+					</KeyboardAvoidingView>
 				</CustomSafeView>
 			);
 		}

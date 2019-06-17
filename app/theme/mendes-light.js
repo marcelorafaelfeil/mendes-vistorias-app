@@ -1,8 +1,26 @@
 import { StyleSheet } from 'react-native';
 
-const PRIMARY_COLOR = '#06e2b5'
+const PRIMARY_COLOR = '#06e2b5';
+const INPUT_HEIGHT = 48;
 
 export const theme = StyleSheet.create({
+	appContent: {
+		backgroundColor: '#f6f6f6'
+	},
+	panelContent: {
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 0 },
+		shadowOpacity: 0.2,
+		shadowRadius: 5,
+	},
+	panel: {
+		backgroundColor: '#ffffff',
+		padding: 10
+	},
+	panelText: {
+		fontSize: 12,
+		color: '#333333'
+	},
 	primaryColor: {
 		color: PRIMARY_COLOR
 	},
@@ -11,21 +29,25 @@ export const theme = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	inputGroupItem: {
-		flex: 1
+		flex: 1,
+		height: INPUT_HEIGHT
 	},
 	input: {
+		minHeight: INPUT_HEIGHT,
 		borderWidth: 1,
 		borderColor: PRIMARY_COLOR,
 		paddingTop: 15,
 		paddingBottom: 15,
 		paddingLeft: 10,
 		paddingRight: 10,
-		textAlign: 'center',
 		color: PRIMARY_COLOR,
-		backgroundColor: '#FFF',
+		backgroundColor: '#FFF'
+	},
+	inputPlaceholder: {
+		color: '#CCCCCC'
 	},
 	select: {
-		height: 47
+		height: INPUT_HEIGHT
 	},
 	selectIcon: {
 		position: 'absolute',
@@ -75,6 +97,19 @@ export const theme = StyleSheet.create({
 		backgroundColor: 'rgba(0,0,0,0.5)',
 		justifyContent: 'center'
 	},
+	pickerAndroidContainer: {
+		borderWidth: 1,
+		borderColor: PRIMARY_COLOR
+	},
+	pickerAndroid: {
+		paddingTop: 15,
+		paddingBottom: 15,
+		paddingLeft: 10,
+		paddingRight: 10,
+		color: PRIMARY_COLOR,
+		backgroundColor: '#FFF',
+		height: INPUT_HEIGHT
+	},
 	selectModal: {
 		flex: 0,
 		backgroundColor: '#FFF',
@@ -100,5 +135,11 @@ export const theme = StyleSheet.create({
 	column6: {
 		flexGrow: 1,
 		margin: 5
+	},
+	separator: {
+		borderTopWidth: 1,
+		borderTopColor: '#CCCCCC',
+		marginTop: 5,
+		marginBottom: 20
 	}
 });

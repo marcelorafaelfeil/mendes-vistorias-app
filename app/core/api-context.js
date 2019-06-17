@@ -1,7 +1,9 @@
-export const API_CONTEXT = 'http://192.168.0.13:8080/api';
-export const TEMP_TOKEN = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MiIsImlhdCI6MTU1OTUzNDM3OSwiZXhwIjoxNTYwMTM5MTc5LCJuYW1lIjoiR3VzdGF2byBGZWxpcGUgU8OpcmdpbyBkYSBDb25jZWnDp8OjbyIsImVtYWlsIjoiY2F1ZS5jZXNhckBtZW5kZXN3ZWIuY29tLmJyIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ09MTEVDVE9SIn1dfQ.3S4VSuwtl-wW2dExohsU9zv0-BNX9A4WV77uTEwsyYpP2AfseHo0UR8bRgQIK3s9BiFRm1FE1valxyr26gGZzg'
+export const API_CONTEXT = 'http://192.168.0.13:3000';
+export const TEMP_TOKEN = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2MiIsImlhdCI6MTU2MDY1OTk3MywiZXhwIjoxNTYxMjY0NzczLCJuYW1lIjoiR3VzdGF2byBGZWxpcGUgU8OpcmdpbyBkYSBDb25jZWnDp8OjbyIsImVtYWlsIjoiY2F1ZS5jZXNhckBtZW5kZXN3ZWIuY29tLmJyIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfQ09MTEVDVE9SIn1dfQ.fNUVCYNow5P-wnleSGhX4opR8EWzqd2G7vGlJirsV4kS9vtgoUkktZk79uPZHpmKM7TNcARZtRAr888F4a6GgA'
 
 export const API = {
-	GET_MY_PENDENCIES: API_CONTEXT + '/collector/pendency/getMyPendencies',
-	GET_PENDENCY: API_CONTEXT + '/collector/pendency/getMyPendencyById/{id}'
+	GET_MY_PENDENCIES: API_CONTEXT + '/getMyPendencies',
+	GET_PENDENCY: API_CONTEXT + '/getMyPendencyById/{id}',
+	GET_RISKS: API_CONTEXT + '/getRisks',
+	GET_OBSERVATION: API_CONTEXT + '/getObservations',
 };

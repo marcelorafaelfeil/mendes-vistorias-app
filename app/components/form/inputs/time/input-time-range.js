@@ -11,6 +11,7 @@ import {
 import { theme } from '../../../../theme/mendes-light';
 import { GetData } from '../../../../utils/get-data';
 import { ButtonComponent } from '../../../button-component';
+import { Time } from './time';
 
 export class InputTimeRange extends React.Component {
 	state = {
@@ -28,8 +29,8 @@ export class InputTimeRange extends React.Component {
 
 	componentWillMount() {
 		this.setState({
-			timeFrom: !!this.props.valueFrom ? this.props.valueFrom : null,
-			timeTo: !!this.props.valueTo ? this.props.valueTo : null
+			timeFrom: !!this.props.valueFrom ? GetData.numberInHoursToDate(this.props.valueFrom) : null,
+			timeTo: !!this.props.valueTo ? GetData.numberInHoursToDate(this.props.valueTo) : null
 		});
 	}
 
@@ -72,14 +73,14 @@ export class InputTimeRange extends React.Component {
 				timeFrom: this.state.chosenTime
 			});
 			if (!!this.props.onChangeFrom) {
-				this.props.onChangeFrom(this.state.chosenTime);
+				this.props.onChangeFrom(new Time(this.state.chosenTime));
 			}
 		} else if (this.state.field === 'to') {
 			this.setState({
 				timeTo: this.state.chosenTime
 			});
 			if (!!this.props.onChangeTo) {
-				this.props.onChangeTo(this.state.chosenTime);
+				this.props.onChangeTo(new Time(this.state.chosenTime));
 			}
 		}
 		this.setState({
@@ -94,12 +95,12 @@ export class InputTimeRange extends React.Component {
 	closeTimeModal() {
 		this.setState({ isTimeModalVisible: false });
 	}
-
+ 
 	setDate(newDate) {
 		this.setState({ chosenTime: newDate });
 	}
 
-	render() {
+	render() { 
 		return (
 			<View>
 				<View style={theme.inputGroup}>
@@ -136,8 +137,8 @@ export class InputTimeRange extends React.Component {
 						transparent={true}
 						animationType={'fade'}
 					>
-						<View style={theme.iosDateContentModal}>
-							<View style={theme.iosDateModal}>
+						<View style={theme.selectContentModal}>
+							<View style={theme.selectModal}>
 								<Text
 									style={[
 										{ textAlign: 'center' },
