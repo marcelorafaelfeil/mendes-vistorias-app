@@ -1,4 +1,4 @@
-import { Platform } from 'expo-core';
+import { Platform } from '@unimodules/core';
 import React from 'react';
 import {
 	DatePickerIOS,

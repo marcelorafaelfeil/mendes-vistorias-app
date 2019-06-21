@@ -2,18 +2,14 @@ import { API, TEMP_TOKEN } from '../../core/api-context';
 import { FormatDashboardData } from '../../screens/collector/dashboard/format-dashboard-data';
 import { BindVariable } from '../../utils/bind-variable';
 import { PendencyValidation } from '../validation/pendency-validation';
+import api from '../interceptor/api';
 
 export class PendenciesService {
 	static getMyPendencies = () => {
-		return fetch(API.GET_MY_PENDENCIES, {
-			method: 'GET',
-			headers: {
-				Authorization: TEMP_TOKEN
-			}
+		return api.get(API.GET_MY_PENDENCIES, {
 		})
-			.then(response => response.json())
-			.then(response => {
-				const formatter = new FormatDashboardData(response);
+			.then(({data}) => {
+				const formatter = new FormatDashboardData(data);
 				const latePendencies = formatter.getLatePendencies();
 				const deadlinePendencies = formatter.getDeadlineRiskPendencies();
 				const newPendencies = formatter.getNewPendencies();
@@ -25,7 +21,7 @@ export class PendenciesService {
 				};
 			})
 			.catch(err => {
-				console.error('err: ', err);
+				console.warn('Erro ao buscar: ', err);
 			});
 	};
 

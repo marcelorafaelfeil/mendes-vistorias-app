@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "710364483643",
+    "firebase_url": "https://mendes-vistoria-1550931959909.firebaseio.com",
+    "project_id": "mendes-vistoria-1550931959909",
+    "storage_bucket": "mendes-vistoria-1550931959909.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710364483643:android:5c1c065a99919ca8",
+        "android_client_info": {
+          "package_name": "br.com.mendesweb.coletor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710364483643-tresdr5l1t2mk5leor2onkbjbcg963ql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.mendesweb.coletor",
+            "certificate_hash": "dda67022abe50adac03fc0720a08c90eaeff7bb3"
+          }
+        },
+        {
+          "client_id": "710364483643-l933r71ko00i6uej5d6kr4pqmamcksdf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb_iA9M0Cd6JNpS8kmTfPUlhY6ZPH60is"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710364483643-l933r71ko00i6uej5d6kr4pqmamcksdf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,7 +13,7 @@ export class ButtonComponent extends React.Component {
 			return 'rgb(12, 254, 204)';
 		} else if (!!props.status) {
 			if (props.status === 'danger') {
-				
+				return '#f44242';
 			} else if (props.status === 'info') {
 				return '#2699FB';
 			} else if (props.status === 'default') {

@@ -4,6 +4,7 @@ import React from 'react';
 import { Loading } from './app/components/loading/loading';
 import { AppContainer } from './app/core/navigation/app-container';
 import { LoadFontService } from './app/services/fonts/load-font-service';
+import NavigationService from './app/services/navigation-service';
 
 // Initialize Firebase
 firebase.initializeApp({
@@ -36,7 +37,11 @@ export default class App extends React.Component {
 		}
 		return (
 			<ActionSheetProvider>
-				<AppContainer />
+				<AppContainer
+					ref={navigatorRef =>
+						NavigationService.setTopLevelNavigator(navigatorRef)
+					}
+				/>
 			</ActionSheetProvider>
 		);
 	}

@@ -1,4 +1,4 @@
-import { Platform } from 'expo-core';
+import { Platform } from '@unimodules/core';
 import React from 'react';
 import { Text, TouchableHighlight, View, Modal, Picker } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';

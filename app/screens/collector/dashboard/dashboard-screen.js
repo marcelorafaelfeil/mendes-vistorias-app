@@ -1,4 +1,3 @@
-import { Platform } from 'expo-core';
 import React from 'react';
 import {
 	FlatList,
@@ -15,6 +14,8 @@ import { CustomActivityIndicatorComponent } from '../../../components/loading/cu
 import { PendenciesService } from '../../../services/rest/pendencies-service';
 import { GetData } from '../../../utils/get-data';
 import { Header } from '../includes/header/header';
+import { Empty } from '../../../components/empty';
+import { Platform } from '@unimodules/core';
 
 export class DashboardScreen extends React.Component {
 	static navigationOptions = {
@@ -81,21 +82,29 @@ export class DashboardScreen extends React.Component {
 				<CustomSafeView>
 					<ScrollView style={styles.content}>
 						<ContainerComponent>
-							<Header>Dashboard</Header>
-							{this.renderPendencies(
-								'Inspeções atrasadas',
-								'danger',
-								this.state.latePendencies
-							)}
-							{this.renderPendencies(
-								'Inspeções a vencer',
-								'warning',
-								this.state.deadlinePendencies
-							)}
-							{this.renderPendencies(
-								'Novas inspeções',
-								'success',
-								this.state.newPendencies
+							<Header showSettings>Dashboard</Header>
+							{!!this.state.latePendencies ||
+							!!this.state.deadlinePendencies ||
+							!!this.state.renderPendencies ? (
+								<View>
+									{this.renderPendencies(
+										'Inspeções atrasadas',
+										'danger',
+										this.state.latePendencies
+									)}
+									{this.renderPendencies(
+										'Inspeções a vencer',
+										'warning',
+										this.state.deadlinePendencies
+									)}
+									{this.renderPendencies(
+										'Novas inspeções',
+										'success',
+										this.state.newPendencies
+									)}
+								</View>
+							) : (
+								<Empty></Empty>
 							)}
 						</ContainerComponent>
 					</ScrollView>

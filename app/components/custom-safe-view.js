@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import { Platform } from 'expo-core';
 import { theme } from '../theme/mendes-light';
+import { Platform } from '@unimodules/core';
 
 export class CustomSafeView extends React.PureComponent {
 	render() {

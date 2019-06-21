@@ -1,4 +1,4 @@
-import { Platform } from 'expo-core';
+import { Platform } from '@unimodules/core';
 import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
 import { Config } from '../../../../core/config';
@@ -45,9 +45,6 @@ export const InspectionTabNavigator = createBottomTabNavigator(
 	},
 	{
 		initialRouteName: Config.INSPECTION_INICIAL_SCREEN,
-		initialRouteParams: {
-			inspection: 42
-		},
 		defaultNavigationOptions: ({ navigation }) => ({
 			tabBarIcon: ({ focused, horizontal, tintColor }) => {
 				const { routeName } = navigation.state;

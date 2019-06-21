@@ -8,17 +8,19 @@ export class FormatDashboardData {
 	_newPendencies = [];
 
 	constructor(d) {
-		this._data = d;
-		this._formattedData = this._data.map(d => {
-			return {
-				id: d.id,
-				name: d.client.name,
-				address: d.client.address,
-				time: this.getTimeDiff(new Date(d.endDate), new Date())
-			};
-		});
+		if (!!d) {
+			this._data = d;
+			this._formattedData = this._data.map(d => {
+				return {
+					id: d.id,
+					name: d.client.name,
+					address: d.client.address,
+					time: this.getTimeDiff(new Date(d.endDate), new Date())
+				};
+			});
 
-		this.doParse();
+			this.doParse();
+		}
 	}
 
 	setData(d) {

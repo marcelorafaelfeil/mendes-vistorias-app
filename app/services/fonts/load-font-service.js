@@ -1,4 +1,4 @@
-import { Font } from 'expo';
+import * as Font from 'expo-font'
 export class LoadFontService {
 	static loadOpenSans = async () => {
 		return Font.loadAsync({
