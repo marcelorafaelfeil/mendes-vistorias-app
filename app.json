@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "Mendes Coletor",
-		"slug": "mendes-collector-app",
+		"name": "mendescoletor",
+		"slug": "mendescoletor",
 		"privacy": "public",
 		"sdkVersion": "33.0.0",
 		"platforms": ["ios", "android"],
