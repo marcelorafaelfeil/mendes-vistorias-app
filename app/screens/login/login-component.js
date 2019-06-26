@@ -21,13 +21,12 @@ export class LoginComponent extends React.Component {
 
 	async _doAuth() {
 		Auth.doAuth({email: this.state.email, password: this.state.password}).then((data) => {
-			console.log('É 2...', data);
 			if (data) {
 				this.props.navigation.dispatch(StackActions.reset({
 					index: 0,
 					key: null,
 					actions: [
-						NavigationActions.navigate({routeName: 'Dashboard'})
+						NavigationActions.navigate({routeName: 'Welcome'})
 					]
 				}));
 			} else {

@@ -1,8 +1,8 @@
-import { API, TEMP_TOKEN } from '../../core/api-context';
+import { API } from '../../core/api-context';
 import { FormatDashboardData } from '../../screens/collector/dashboard/format-dashboard-data';
 import { BindVariable } from '../../utils/bind-variable';
-import { PendencyValidation } from '../validation/pendency-validation';
 import api from '../interceptor/api';
+import { PendencyValidation } from '../validation/pendency-validation';
 
 export class PendenciesService {
 	static getMyPendencies = () => {
@@ -27,13 +27,10 @@ export class PendenciesService {
 
 	static getPendency = id => {
 		const url = BindVariable.bind(API.GET_PENDENCY, { id });
-		return fetch(url, {
-			headers: {
-				Authorization: TEMP_TOKEN
-			},
+		return api.get(url, {
 			method: 'GET'
 		})
-			.then(response => response.json())
+			.then(({data}) => {return data;})
 			.catch(err => {
 				console.error('err: ', err);
 			});

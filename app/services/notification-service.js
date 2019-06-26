@@ -1,6 +1,6 @@
-import Axios from 'axios';
 import { Notifications, Permissions } from 'expo';
 import { API } from '../core/api-context';
+import api from './interceptor/api';
 
 export class NotificationService {
 	static askPermission = async () => {
@@ -22,7 +22,7 @@ export class NotificationService {
 
 	static saveNotificationToken() {
 		Notifications.getExpoPushTokenAsync().then(token => {
-			Axios.post(API.SAVE_NOTIFICATION_TOKEN, {
+			api.post(API.SAVE_NOTIFICATION_TOKEN, {
 				token
 			}).catch(err => {
 				console.warn(

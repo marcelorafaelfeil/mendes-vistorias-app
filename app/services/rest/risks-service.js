@@ -1,12 +1,9 @@
-import { API, TEMP_TOKEN } from '../../core/api-context';
+import { API } from '../../core/api-context';
 
 export class RisksService {
 	static getRisks = () => {
 		return fetch(API.GET_RISKS, {
-			method: 'GET',
-			headers: {
-				Authorization: TEMP_TOKEN
-			}
+			method: 'GET'
 		})
 			.then(response => response.json())
 			.then(response => {
