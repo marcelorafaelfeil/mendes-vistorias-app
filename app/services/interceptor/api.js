@@ -2,7 +2,8 @@ import axios from 'axios';
 import { Auth } from '../auth/auth-service';
 import { NavigationActions } from 'react-navigation';
 
-const api = axios.create();
+const api = axios.create({
+});
 
 api.interceptors.request.use(async config => {
 	const accessToken = await Auth.getToken();
@@ -30,8 +31,9 @@ api.interceptors.response.use((response) => {
 				]
 			})
 		)
+		return null;
 	}
-	return null;
+	Promise.reject(error);
 });
 
 export default api;

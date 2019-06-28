@@ -1,11 +1,11 @@
 {
 	"expo": {
-		"name": "mendescoletor",
-		"slug": "mendescoletor",
+		"name": "Mendes Coletor",
+		"slug": "Mendes Coletor",
 		"privacy": "public",
 		"sdkVersion": "33.0.0",
 		"platforms": ["ios", "android"],
-		"version": "1.2.0",
+		"version": "1.2.1",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
 		"splash": {
@@ -24,6 +24,7 @@
 		"android": {
 			"package": "br.com.mendesweb.coletor",
 			"googleServicesFile": "./google-services.json",
+			"versionCode": 6,
 			"permissions": [
 				"CAMERA",
 				"ACCESS_COARSE_LOCATION",

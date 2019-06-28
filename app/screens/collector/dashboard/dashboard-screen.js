@@ -83,9 +83,12 @@ export class DashboardScreen extends React.Component {
 					<ScrollView style={styles.content}>
 						<ContainerComponent>
 							<Header showSettings>Dashboard</Header>
-							{!!this.state.latePendencies ||
-							!!this.state.deadlinePendencies ||
-							!!this.state.renderPendencies ? (
+							{!!this.state.latePendencies &&
+							this.state.latePendencies.length > 0 ||
+							(!!this.state.deadlinePendencies &&
+								this.state.deadlinePendencies.length > 0) ||
+							(!!this.state.renderPendencies &&
+								this.state.renderPendencies.length > 0) ? (
 								<View>
 									{this.renderPendencies(
 										'Inspeções atrasadas',
@@ -104,7 +107,7 @@ export class DashboardScreen extends React.Component {
 									)}
 								</View>
 							) : (
-								<Empty></Empty>
+								<Empty />
 							)}
 						</ContainerComponent>
 					</ScrollView>

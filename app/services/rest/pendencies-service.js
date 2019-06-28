@@ -8,16 +8,24 @@ export class PendenciesService {
 	static getMyPendencies = () => {
 		return api.get(API.GET_MY_PENDENCIES, {
 		})
-			.then(({data}) => {
-				const formatter = new FormatDashboardData(data);
-				const latePendencies = formatter.getLatePendencies();
-				const deadlinePendencies = formatter.getDeadlineRiskPendencies();
-				const newPendencies = formatter.getNewPendencies();
+			.then((response) => {
+				if (!!response && !!response.data) {
+					const data = response.data;
+					const formatter = new FormatDashboardData(data);
+					const latePendencies = formatter.getLatePendencies();
+					const deadlinePendencies = formatter.getDeadlineRiskPendencies();
+					const newPendencies = formatter.getNewPendencies();
 
+					return {
+						latePendencies: latePendencies,
+						deadlinePendencies: deadlinePendencies,
+						newPendencies: newPendencies
+					};
+				}
 				return {
-					latePendencies: latePendencies,
-					deadlinePendencies: deadlinePendencies,
-					newPendencies: newPendencies
+					latePendencies: [],
+					deadlinePendencies: [],
+					newPendencies: []
 				};
 			})
 			.catch(err => {

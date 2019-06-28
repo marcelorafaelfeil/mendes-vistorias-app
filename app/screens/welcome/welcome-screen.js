@@ -28,7 +28,7 @@ export class WelcomeScreen extends Component {
 		const statusLocation = await LocationService.askPermission();
 		if (statusLocation !== 'granted') {
 			this.getLocationPermission();
-		}
+		} 
 		return;
 	}
 

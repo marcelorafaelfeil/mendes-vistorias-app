@@ -1,4 +1,5 @@
-import { Constants, Permissions } from 'expo';
+import { Constants } from 'expo';
+import * as Permissions from 'expo-permissions';
 import React from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import { CustomSafeView } from '../../../../../components/custom-safe-view';
