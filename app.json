@@ -1,7 +1,7 @@
 {
 	"expo": {
 		"name": "Mendes Coletor",
-		"slug": "Mendes Coletor",
+		"slug": "mendescoletor",
 		"privacy": "public",
 		"sdkVersion": "33.0.0",
 		"platforms": ["ios", "android"],
@@ -24,7 +24,7 @@
 		"android": {
 			"package": "br.com.mendesweb.coletor",
 			"googleServicesFile": "./google-services.json",
-			"versionCode": 6,
+			"versionCode": 7,
 			"permissions": [
 				"CAMERA",
 				"ACCESS_COARSE_LOCATION",
