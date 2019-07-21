@@ -3,6 +3,7 @@ import { FormatDashboardData } from '../../screens/collector/dashboard/format-da
 import { BindVariable } from '../../utils/bind-variable';
 import api from '../interceptor/api';
 import { PendencyValidation } from '../validation/pendency-validation';
+import { ObservationService } from '../../screens/collector/inspection/screens/observation-screen/services/observation-service';
 
 export class PendenciesService {
 	static getMyPendencies = () => {
@@ -29,7 +30,7 @@ export class PendenciesService {
 				};
 			})
 			.catch(err => {
-				console.warn('Erro ao buscar: ', err);
+				console.warn('Erro ao buscar pendências: ', err);
 			});
 	};
 
@@ -40,12 +41,53 @@ export class PendenciesService {
 		})
 			.then(({data}) => {return data;})
 			.catch(err => {
-				console.error('err: ', err);
+				console.error('Erro ao buscar dados da inspeção: ', err);
 			});
 	};
 
 	static savePendency = (data) => {
 		const validation = new PendencyValidation(data);
 		validation.validateGeneralData();
+	}
+
+	static frustrateInspection = (id, justification) => {
+		console.info(`Frustrar inspeção [id=${id}, justification=${justification}]`);
+		return api.post(API.FRUSTRATE_INSPECTION, {
+			inspection: {id},
+			observation: {
+				content: justification
+			}
+		}, {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(data => {
+			return data;
+		}).catch(err => {
+			console.info('ERROR: Erro ao frustrar a inspeção.');
+			console.error(err);
+		});
+	}
+
+	static concludeInspection = async (id) => {
+		console.info(`Concluir inspeção [id=${id}]`);
+		
+		const observation = await ObservationService.getInStorage(id);
+		
+		return api.post(API.CONCLUDE_INSPECTION, {
+			inspection: {id},
+			observation: {
+				content: observation
+			}
+		}, {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(data => {
+			return data;
+		}).catch(err => {
+			console.info('ERROR: Erro ao concluir a inspeção.');
+			console.error(err);
+		});
 	}
 }

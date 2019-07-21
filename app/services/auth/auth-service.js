@@ -20,7 +20,7 @@ export class Auth {
 			}
 			return false;
 		}).catch((err) => {
-			console.log(err);
+			console.err(err);
 		})
 	}
 

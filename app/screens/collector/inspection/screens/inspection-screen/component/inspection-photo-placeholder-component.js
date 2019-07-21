@@ -1,4 +1,4 @@
-import { ImagePicker } from 'expo';
+import * as ImagePicker from 'expo-image-picker';
 import { Platform } from '@unimodules/core';
 import React, { Component } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';

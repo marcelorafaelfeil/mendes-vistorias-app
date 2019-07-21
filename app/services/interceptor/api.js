@@ -20,7 +20,8 @@ api.interceptors.request.use(async config => {
 api.interceptors.response.use((response) => {
 	return response;
 }, (error) => {
-	if (error.response.status === 401) {
+	console.info('A requisição retornou erro.');
+	if (!!error && !!error.response && !!error.response.status && error.response.status === 401) {
 		Auth.clearToken();
 		NavigationActions.navigate(
 			NavigationActions.reset({
@@ -32,8 +33,14 @@ api.interceptors.response.use((response) => {
 			})
 		)
 		return null;
+	} else if (!!error && !!error.response) {
+		if (!!error && !!error.response && !!error.response.data) {
+			console.log(error.response.data);
+		} else {
+			console.log(error.response);
+		}
+		Promise.reject(error);
 	}
-	Promise.reject(error);
 });
 
 export default api;

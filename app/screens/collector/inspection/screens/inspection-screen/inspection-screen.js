@@ -1,16 +1,16 @@
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
+import { AsyncStorage } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { CustomSafeView } from '../../../../../components/custom-safe-view';
+import { CustomActivityIndicatorComponent } from '../../../../../components/loading/custom-activity-indicator-component';
 import { Header } from '../../../includes/header/header';
 import GridPhotosComponent from './component/grid-photos-component';
 import { InspectionPhotoPlaceholderComponent } from './component/inspection-photo-placeholder-component';
 import PhotosService from './services/photos-service';
-import { CustomActivityIndicatorComponent } from '../../../../../components/loading/custom-activity-indicator-component';
 
 export class InspectionScreen extends React.Component {
-	
 	state = {
 		inspection: this.props.navigation.getParam('inspection'),
 		photos: [],
@@ -25,11 +25,13 @@ export class InspectionScreen extends React.Component {
 
 	async componentDidMount() {
 		this.getPermissionAsync();
-		const photos = await PhotosService.loadPhotosOfStorage(this.state.inspection);
+		const photos = await PhotosService.loadPhotosOfStorage(
+			this.state.inspection
+		);
 		this.setState({
 			photos,
 			loaded: true
-		})
+		});
 	}
 
 	getPermissionAsync = async () => {
@@ -46,25 +48,61 @@ export class InspectionScreen extends React.Component {
 		}
 	};
 
+	/**
+	 * @description Salva a foto na memória do celular e também salva a foto no banco de dados.
+	 */
 	savePhoto(photo) {
 		if (!photo.cancelled) {
 			const photos = this.state.photos;
-			photos.push(photo);
+			photo.loading = true;
+			photo.completed = false;
+			const index = photos.push(photo) - 1;
 			this.setState({ photos });
-			PhotosService.savePhoto(photos, this.state.inspection);
+
+			// Salva a foto na memória do celular
+			AsyncStorage.setItem(
+				PhotosService.TAG_PHOTOS + this.state.inspection,
+				JSON.stringify(photos)
+			);
+
+			// Salva a foto no banco de dados
+			PhotosService.savePhoto(photo, this.state.inspection).then(
+				response => {
+					// Se retornar sucesso, remove o loading.
+					const photos = this.state.photos;
+					photos[index].id = response.data.id;
+					photos[index].loading = false;
+					photos[index].completed = true;
+					this.setState({ photos });
+				},
+				err => {
+					const photos = this.state.photos;
+					photos[index].loading = false;
+					this.setState({ photos });
+					console.info(`ERROR: Não foi possível salvar a foto.`);
+					console.error(err);
+				}
+			);
 		}
 	}
 
 	removePhoto(index) {
 		const photos = this.state.photos;
+		if (!!photos[index].id) {
+			PhotosService.removePhoto(photos[index].id);
+		}
 		photos.splice(index, 1);
 		this.setState({ photos });
-		PhotosService.savePhoto(photos, this.state.inspection);
+		// Salva a foto na memória do celular
+		AsyncStorage.setItem(
+			PhotosService.TAG_PHOTOS + this.state.inspection,
+			JSON.stringify(photos)
+		);
 	}
 
 	render() {
 		if (!this.state.loaded) {
-			return <CustomActivityIndicatorComponent />
+			return <CustomActivityIndicatorComponent />;
 		}
 		return (
 			<CustomSafeView>

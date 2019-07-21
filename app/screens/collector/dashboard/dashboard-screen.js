@@ -30,14 +30,25 @@ export class DashboardScreen extends React.Component {
 		newPendencies: []
 	};
 
-	async componentDidMount() {
+	componentDidMount() {
+		this.props.navigation.addListener('willFocus', () => {
+			const refresh = this.props.navigation.getParam('refresh');
+			if (!!refresh) {
+				this.setState({ loaded: this.state.loaded + 1 });
+				this.loadPedencies();
+			}
+		});
+		this.loadPedencies();
+	}
+
+	loadPedencies = () => {
 		return PendenciesService.getMyPendencies().then(data => {
 			this.setState({
 				...data,
 				loaded: this.state.loaded - 1
 			});
 		});
-	}
+	};
 
 	renderItem = (data, status) => {
 		return (
@@ -49,7 +60,7 @@ export class DashboardScreen extends React.Component {
 				}
 			>
 				<ListItem
-					label={data.item.name}
+					label={data.item.id + ' - ' + data.item.name}
 					description={GetData.getAddress(data.item.address)}
 					status={status}
 					time={!!data.item.time ? data.item.time.quantity * -1 : 0}
@@ -83,8 +94,8 @@ export class DashboardScreen extends React.Component {
 					<ScrollView style={styles.content}>
 						<ContainerComponent>
 							<Header showSettings>Dashboard</Header>
-							{!!this.state.latePendencies &&
-							this.state.latePendencies.length > 0 ||
+							{(!!this.state.latePendencies &&
+								this.state.latePendencies.length > 0) ||
 							(!!this.state.deadlinePendencies &&
 								this.state.deadlinePendencies.length > 0) ||
 							(!!this.state.renderPendencies &&

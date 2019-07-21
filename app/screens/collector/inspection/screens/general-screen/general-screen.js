@@ -17,15 +17,15 @@ export class GeneralScreen extends React.Component {
 		loaded: false
 	};
 
+	intervalOfSync;
+
 	constructor(props) {
 		super(props);
 		this.saveData = this.saveData.bind(this);
 	}
 
 	async componentWillMount() {
-		var data = await AsyncStorage.getItem(
-			`geleral@form@${this.state.inspection}`
-		);
+		var data = await GeneralDataService.getData(this.state.inspection);
 
 		const optionsRisks = await RisksService.getRisks().then(data => {
 			return data;
@@ -33,9 +33,7 @@ export class GeneralScreen extends React.Component {
 		this.setState({
 			optionsRisks,
 			loaded: true,
-			data: !!data
-				? GeneralDataService.parse(JSON.parse(data))
-				: GeneralDataService.DEFAULT_VALUE
+			data
 		});
 	}
 
@@ -49,10 +47,10 @@ export class GeneralScreen extends React.Component {
 				}
 			}),
 			() => {
-				AsyncStorage.setItem(
-					`geleral@form@${this.state.inspection}`,
-					JSON.stringify(this.state.data)
-				);
+				if (!!this.intervalOfSync) {
+					clearTimeout(this.intervalOfSync);
+				}
+				this.intervalOfSync = setTimeout(() => GeneralDataService.syncWithSystem(this.state.data, this.state.inspection), 3000);
 			}
 		);
 	}

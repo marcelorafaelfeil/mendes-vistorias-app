@@ -87,7 +87,7 @@ export const theme = StyleSheet.create({
 	inputGroupLabelTimeRange: {
 		width: 90
 	},
-	selectContentModal: {
+	contentModal: {
 		position: 'absolute',
 		width: '100%',
 		height: '100%',
@@ -110,7 +110,7 @@ export const theme = StyleSheet.create({
 		backgroundColor: '#FFF',
 		height: INPUT_HEIGHT
 	},
-	selectModal: {
+	bodyModal: {
 		flex: 0,
 		backgroundColor: '#FFF',
 		margin: 10,

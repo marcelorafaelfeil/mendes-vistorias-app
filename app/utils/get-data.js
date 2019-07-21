@@ -74,9 +74,49 @@ export class GetData {
 		}
 	}
 
+	static stringToDateTime(text, dateSeparator) {
+		try {
+			if (text.indexOf(' ') >= 0) {
+				const sdate = text.split(' ');
+				text = sdate[0];
+				if (text.indexOf(dateSeparator) >= 0) {
+					const t = text.split(dateSeparator);
+					if (t.length >= 3) {
+						if (t[0] >= 1900) {
+							const time = sdate[1];
+							let hour = 0;
+							let minute = 0;
+							if (time.indexOf(':') >= 0) {
+								const stime = time.split(':');
+								hour = stime[0];
+								minute = stime[1];
+								return new Date(
+									parseInt(t[0]),
+									parseInt(t[1] - 1),
+									parseInt(t[2]),
+									hour,
+									minute
+								);
+							}
+						}
+					}
+				}
+			}
+			return null;
+		} catch (e) {
+			return null;
+		}
+	}
+
 	static stringToCompleteData(date, at) {
 		var stringDate = date.toLocaleDateString();
-		stringDate = `${stringDate} ${!!at ? at : 'às'} ${date.getHours()}h${date.getMinutes()}`;
+		stringDate = `${stringDate} ${!!at ? at : 'às'} ${GetData.leadingZero(
+			date.getHours()
+		)}h${GetData.leadingZero(date.getMinutes())}`;
 		return stringDate;
+	}
+
+	static leadingZero(value) {
+		return (value < 10 ? '0' : '') + value;
 	}
 }

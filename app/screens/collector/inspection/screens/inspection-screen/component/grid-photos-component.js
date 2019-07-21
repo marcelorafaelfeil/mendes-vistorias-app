@@ -1,13 +1,32 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet';
-import { ImagePicker } from 'expo';
+import * as ImagePicker from 'expo-image-picker';
 import { Platform } from '@unimodules/core';
 import React, { Component } from 'react';
-import { Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+	Dimensions,
+	Image,
+	StyleSheet,
+	TouchableOpacity,
+	View,
+	ActivityIndicator
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../../../../../theme/mendes-light';
+import styled from 'styled-components';
 
 const IMAGE_WIDTH = Dimensions.get('window').width / 2 - 10;
 const IMAGE_HEIGHT = Dimensions.get('window').width / 2 - 10;
+
+const LoadingStyled = styled(ActivityIndicator)`
+	position: absolute;
+	z-index: 10;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 10;
+`;
 
 @connectActionSheet
 export default class GridPhotosComponent extends Component {
@@ -15,7 +34,10 @@ export default class GridPhotosComponent extends Component {
 		return (
 			<View style={styles.contentGrid}>
 				{this.props.photos.map((photo, index) => (
-					<TouchableOpacity onPress={() => this.openImageOptions(index)} key={index}>
+					<TouchableOpacity
+						onPress={() => this.openImageOptions(index)}
+						key={index}
+					>
 						<View style={styles.grid}>
 							<Image
 								source={{ uri: photo.uri }}
@@ -25,6 +47,9 @@ export default class GridPhotosComponent extends Component {
 									borderRadius: 10
 								}}
 							/>
+							{!!photo.loading && (
+								<LoadingStyled size="large" color="#0c9" />
+							)}
 						</View>
 					</TouchableOpacity>
 				))}
@@ -106,7 +131,8 @@ const styles = StyleSheet.create({
 	grid: {
 		width: IMAGE_WIDTH,
 		height: IMAGE_HEIGHT,
-		margin: 5
+		margin: 5,
+		position: 'relative'
 	},
 	placeholder: {
 		borderWidth: 5,

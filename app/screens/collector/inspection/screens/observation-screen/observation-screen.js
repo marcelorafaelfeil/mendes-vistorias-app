@@ -53,7 +53,7 @@ export default class ObservationScreen extends Component {
 						<ContainerComponent>
 							<Header>Observações</Header>
 							<ListObservations data={this.state.listOfObservations} />
-							<View style={theme.separator} />
+							{!!this.state.listOfObservations && this.state.listOfObservations.length > 0 &&(<View style={theme.separator} />)}
 							<AddObservation value={this.state.observation} onFieldFocus={() => this.scrollView.scrollToEnd()} onChangeObservation={(text) => this.saveObservation(text) } />
 						</ContainerComponent>
 					</ScrollView>

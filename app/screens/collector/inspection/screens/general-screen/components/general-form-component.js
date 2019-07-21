@@ -41,6 +41,7 @@ export class GeneralFormComponent extends React.PureComponent {
 				[name]: value
 			}
 		}));
+		
 		this.props.onChange(formattedValue, name);
 	};
 
@@ -72,6 +73,7 @@ export class GeneralFormComponent extends React.PureComponent {
 						<InputText
 							keyboardType="decimal-pad"
 							value={this.state.form.employeesQuantity.toString()}
+							mask="numeric"
 							align="center"
 							onChangeText={t =>
 								this.handleFormChange(t, 'employeesQuantity')
@@ -84,6 +86,7 @@ export class GeneralFormComponent extends React.PureComponent {
 							keyboardType="decimal-pad"
 							value={this.state.form.groundSize.toString()}
 							align="center"
+							mask="metric"
 							onChangeText={t =>
 								this.handleFormChange(t, 'groundSize')
 							}
@@ -95,6 +98,7 @@ export class GeneralFormComponent extends React.PureComponent {
 							keyboardType="decimal-pad"
 							value={this.state.form.builtArea.toString()}
 							align="center"
+							mask="metric"
 							onChangeText={t =>
 								this.handleFormChange(t, 'builtArea')
 							}
@@ -120,6 +124,7 @@ export class GeneralFormComponent extends React.PureComponent {
 							keyboardType="decimal-pad"
 							value={this.state.form.builtAge.toString()}
 							align="center"
+							mask="numeric"
 							onChangeText={t =>
 								this.handleFormChange(t, 'builtAge')
 							}
@@ -134,6 +139,7 @@ export class GeneralFormComponent extends React.PureComponent {
 							onChangeText={t =>
 								this.handleFormChange(t, 'quantityOfPaviments')
 							}
+							mask="numeric"
 							align="center"
 							keyboardType="decimal-pad"
 						/>
@@ -155,6 +161,7 @@ export class GeneralFormComponent extends React.PureComponent {
 								<InputText
 									align="center"
 									keyboardType="numeric"
+									mask="currency"
 									caretHidden={true}
 									value={this.state.form.builtAmount}
 									onChangeText={t =>
@@ -173,8 +180,8 @@ export class GeneralFormComponent extends React.PureComponent {
 						<Select
 							placeholder={'Selecione'}
 							options={[
-								{ label: 'Não', value: 0 },
-								{ label: 'Sim', value: 1 }
+								{ label: 'Não', value: 'NO' },
+								{ label: 'Sim', value: 'YES' }
 							]}
 							value={this.state.form.comercialLocalActivity}
 							onSelect={t =>

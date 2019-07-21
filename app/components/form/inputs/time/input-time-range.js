@@ -137,8 +137,8 @@ export class InputTimeRange extends React.Component {
 						transparent={true}
 						animationType={'fade'}
 					>
-						<View style={theme.selectContentModal}>
-							<View style={theme.selectModal}>
+						<View style={theme.contentModal}>
+							<View style={theme.bodyModal}>
 								<Text
 									style={[
 										{ textAlign: 'center' },

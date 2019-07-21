@@ -9,7 +9,7 @@ export default class ListObservations extends Component {
 			<View>
 				{!!this.props.data && this.props.data.map((item, index) => (
 					<View key={index} style={[theme.panelContent, { marginBottom: 15 }]}>
-						<HeaderObservation title={item.author} subHeader={item.date} picture={item.photo} />
+						<HeaderObservation title={item.author.name} subHeader={item.createdAt} picture={item.photo} />
 						<View style={theme.panel}>
 							<Text style={[theme.panelText, styles.observationText]}>{item.content}</Text>
 						</View>

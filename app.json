@@ -16,6 +16,9 @@
 		"updates": {
 			"fallbackToCacheTimeout": 0
 		},
+		"notification": {
+			"icon": "./assets/icon.png"
+		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": true,
