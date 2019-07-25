@@ -63,8 +63,8 @@ export class DashboardScreen extends React.Component {
 					label={data.item.id + ' - ' + data.item.name}
 					description={GetData.getAddress(data.item.address)}
 					status={status}
-					time={!!data.item.time ? data.item.time.quantity * -1 : 0}
-					unit={!!data.item.time ? data.item.time.unit : ''}
+					time={2}
+					unit={'dias'}
 				/>
 			</TouchableHighlight>
 		);
