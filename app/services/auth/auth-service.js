@@ -1,16 +1,19 @@
 import { AsyncStorage } from 'react-native';
 import { API } from '../../core/api-context';
 import NavigationService from '../navigation-service';
+import { StringUtils } from '../../utils/string-utils';
 
 export class Auth {
 	static TAG = 'auth';
 	static TAG_TOKEN = '@token';
 
 	static doAuth(params) {
+		const tenant = StringUtils.getTenantFromEmail(params.email);
 		return fetch(API.DO_AUTH, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-Person-Tenant': tenant
 			},
 			body: JSON.stringify(params)
 		}).then(r => r.json()).then((data) => {
