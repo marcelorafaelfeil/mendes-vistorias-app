@@ -1,4 +1,4 @@
-export const API_CONTEXT = 'http://192.168.0.13:8080/api'; // 'http://mendesweb.com.br:8001/api'; //'http://mendesweb.com.br:8001';
+export const API_CONTEXT = 'http://192.168.0.22:8080/api'; // 'http://mendesweb.com.br:8001/api'; //'http://mendesweb.com.br:8001';
 
 export const API = {
 	DO_AUTH: `${API_CONTEXT}/auth`,

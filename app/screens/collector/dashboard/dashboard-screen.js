@@ -98,8 +98,8 @@ export class DashboardScreen extends React.Component {
 								this.state.latePendencies.length > 0) ||
 							(!!this.state.deadlinePendencies &&
 								this.state.deadlinePendencies.length > 0) ||
-							(!!this.state.renderPendencies &&
-								this.state.renderPendencies.length > 0) ? (
+							(!!this.state.newPendencies &&
+								this.state.newPendencies.length > 0) ? (
 								<View>
 									{this.renderPendencies(
 										'Inspeções atrasadas',

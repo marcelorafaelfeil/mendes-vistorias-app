@@ -29,4 +29,16 @@ export class StringUtils {
 		}
 		return value;
 	}
+
+	static getTenant(email) {
+		if (email.indexOf('@') >= 0) {
+			const e = email.split('@');
+			if (e[1].indexOf('.') >= 0) {
+				const tenant = e[1].split('.')[0];
+				return tenant;
+			}
+			return e[1];
+		}
+		return email;
+	}
 }
