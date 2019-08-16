@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import styled from 'styled-components';
 
 const PRIMARY_COLOR = '#06e2b5';
 const INPUT_HEIGHT = 48;
@@ -123,21 +124,27 @@ export const theme = StyleSheet.create({
 	},
 	row: {
 		display: 'flex',
+		alignContent: 'stretch',
+		flexWrap: 'wrap',
 		flexDirection: 'row',
 		marginBottom: 10,
 		marginLeft: -5,
 		marginRight: -5
 	},
-	column: {
-		flex: 1,
-		margin: 5
+	columnBase: {
+		padding: 5
 	},
-	column6: {
-		flexGrow: 1,
-		margin: 5
+	'column-LG': {
+		width: '100%',
+	},
+	'column-MD': {
+		width: '50%',
+	},
+	'column-SM': {
+		width: '33.33333%'
 	},
 	separator: {
-		borderTopWidth: 1,
+		borderTopWidth: 1, 
 		borderTopColor: '#CCCCCC',
 		marginTop: 5,
 		marginBottom: 20

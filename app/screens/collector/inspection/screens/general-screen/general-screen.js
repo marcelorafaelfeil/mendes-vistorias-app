@@ -9,6 +9,7 @@ import { RisksService } from '../../../../../services/rest/risks-service';
 import { Header } from '../../../includes/header/header';
 import { GeneralFormComponent } from './components/general-form-component';
 import { GeneralDataService } from './services/general-data-service';
+import { PendenciesService } from '../../../../../services/rest/pendencies-service';
 
 export class GeneralScreen extends React.Component {
 	state = {
@@ -26,6 +27,7 @@ export class GeneralScreen extends React.Component {
 
 	async componentWillMount() {
 		var data = await GeneralDataService.getData(this.state.inspection);
+		const formBuilder = await PendenciesService.getFormByInspection(this.state.inspection)
 
 		const optionsRisks = await RisksService.getRisks().then(data => {
 			return data;
@@ -33,7 +35,8 @@ export class GeneralScreen extends React.Component {
 		this.setState({
 			optionsRisks,
 			loaded: true,
-			data
+			data,
+			formBuilder
 		});
 	}
 
@@ -76,6 +79,7 @@ export class GeneralScreen extends React.Component {
 								<GeneralFormComponent
 									optionsRisks={this.state.optionsRisks}
 									data={this.state.data}
+									formBuilder={this.state.formBuilder}
 									onChange={this.saveData}
 								/>
 							</ContainerComponent>

@@ -22,15 +22,15 @@ export class NotificationService {
 	};
 
 	static saveNotificationToken() {
-		Notifications.getExpoPushTokenAsync().then(token => {
-			api.post(API.SAVE_NOTIFICATION_TOKEN, {
-				token
-			}).catch(err => {
-				console.warn(
-					'Não foi possível salvar o token de notificação.',
-					err
-				);
+			Notifications.getExpoPushTokenAsync().then(token => {
+				api.post(API.SAVE_NOTIFICATION_TOKEN, {
+					token
+				}).catch(err => {
+					console.warn(
+						'Não foi possível salvar o token de notificação.',
+						err
+					);
+				});
 			});
-		});
 	}
 }
