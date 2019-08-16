@@ -6,5 +6,5 @@ npm-debug.*
 *.key
 *.mobileprovision
 .expo-shared/
-.expo-source/firebase
-firebase
+.expo-source/
+firebase/
