@@ -38,7 +38,7 @@ export class PendenciesService {
 
 	static getFormByInspection(id) {
 		return api.get(API.GET_FORM_BY_INSPECTION, {
-			params: {id}
+			params: { id }
 		})
 			.then((response) => {
 				return response.data.fields;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View } from 'react-native';
-import { InputTimeRange } from '../../../../../../components/form/inputs/time/input-time-range';
 import { Time } from '../../../../../../components/form/inputs/time/time';
 import { LabelComponent } from '../../../../../../components/label-component';
 import { CustomActivityIndicatorComponent } from '../../../../../../components/loading/custom-activity-indicator-component';
@@ -19,7 +18,6 @@ export class GeneralFormComponent extends React.PureComponent {
 		const data = this.props.data;
 		const formBuilder = this.props.formBuilder;
 
-		console.log('formBuilder: ', formBuilder);
 		this.setState({
 			form: data,
 			loaded: true,
@@ -46,6 +44,13 @@ export class GeneralFormComponent extends React.PureComponent {
 		this.props.onChange(formattedValue, name);
 	};
 
+	bindValue(data, value) {
+		const formBuilder = this.state.formBuilder;
+		formBuilder[data.index].value = value;
+		console.log(formBuilder[data.index]);
+		this.setState({ formBuilder });
+	}
+
 	render() {
 		const optionsRisks = this.props.optionsRisks;
 		if (!this.state.loaded) {
@@ -58,10 +63,14 @@ export class GeneralFormComponent extends React.PureComponent {
 						<View style={[theme.columnBase, theme[`column-${f.appSize}`]]} key={index}>
 							<LabelComponent>{f.name}</LabelComponent>
 							<FormBuilderField
+								index={index}
+								name={f.name}
+								variable={f.systemVariable}
 								size={f.appSize}
 								required={f.isRequired}
 								type={f.type}
 								options={!!f.options ? f.options : []}
+								onChange={(data, value) => this.bindValue(data, value)}
 							></FormBuilderField>
 						</View>
 					))}

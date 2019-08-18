@@ -1,15 +1,15 @@
 import '@firebase/firestore';
 import React from 'react';
-import { AsyncStorage, KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ContainerComponent } from '../../../../../components/container-component';
 import { CustomSafeView } from '../../../../../components/custom-safe-view';
 import { CustomActivityIndicatorComponent } from '../../../../../components/loading/custom-activity-indicator-component';
+import { PendenciesService } from '../../../../../services/rest/pendencies-service';
 import { RisksService } from '../../../../../services/rest/risks-service';
 import { Header } from '../../../includes/header/header';
 import { GeneralFormComponent } from './components/general-form-component';
 import { GeneralDataService } from './services/general-data-service';
-import { PendenciesService } from '../../../../../services/rest/pendencies-service';
 
 export class GeneralScreen extends React.Component {
 	state = {

@@ -62,10 +62,11 @@ export class Select extends React.Component {
 				onValueChange={(itemValue, itemIndex) => {
 					this.setState({
 						value: options[itemIndex]
+					}, () => {
+						if (Platform.OS === 'android') {
+							this.selectOption();
+						}
 					});
-					if (Platform.OS === 'android') {
-						this.selectOption();
-					}
 				}}
 			>
 				{options.map((o, index) => (
@@ -160,10 +161,10 @@ export class Select extends React.Component {
 						</Modal>
 					</View>
 				) : (
-					<View style={theme.pickerAndroidContainer}>
-						{this.renderPicker(options)}
-					</View>
-				)}
+						<View style={theme.pickerAndroidContainer}>
+							{this.renderPicker(options)}
+						</View>
+					)}
 			</View>
 		);
 	}

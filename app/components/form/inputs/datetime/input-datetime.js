@@ -1,14 +1,12 @@
 import { Platform } from '@unimodules/core';
-import moment from 'moment';
 import React from 'react';
-import { DatePickerAndroid, DatePickerIOS, Modal, Text, TouchableWithoutFeedback, View, TimePickerAndroid } from 'react-native';
-import { TextInputMask } from 'react-native-masked-text';
+import { DatePickerAndroid, DatePickerIOS, Modal, Text, TouchableWithoutFeedback, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../../../theme/mendes-light';
 import { GetData } from '../../../../utils/get-data';
 import { ButtonComponent } from '../../../button-component';
 
-export class InputDate extends React.PureComponent {
+export class DateTime extends React.Component {
 	state = {
 		value: '',
 		chosenIOSDate: new Date(),
@@ -41,19 +39,13 @@ export class InputDate extends React.PureComponent {
 			});
 
 			if (action !== DatePickerAndroid.dismissedAction) {
-				if (this.props.mode === 'datetime') {
-					var { actionTime, hour, minute } = await TimePickerAndroid.open();
-				}
-
-				if (actionTime !== TimePickerAndroid.dismissedAction) {
-					var date = new Date(year, month, day, !!hour ? hour : 0, !!minute ? minute : 0);
-					this.setState({
-						value: moment(date).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),
-						chosenIOSDate: date
-					});
-					if (!!this.props.onChangeCalendar) {
-						this.props.onChangeCalendar(this.state.chosenIOSDate);
-					}
+				var date = new Date(year, month, day);
+				this.setState({
+					value: moment(date).format('DD/MM/YYYY'),
+					chosenIOSDate: date
+				});
+				if (!!this.props.onChangeCalendar) {
+					this.props.onChangeCalendar(this.state.chosenIOSDate);
 				}
 			}
 		} else if (Platform.OS === 'ios') {
@@ -111,7 +103,7 @@ export class InputDate extends React.PureComponent {
 							returnKeyType={'done'}
 							keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
 							options={{
-								format: this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
+								format: 'DD/MM/YYYY'
 							}}
 							value={this.state.value}
 							onChangeText={text => {
@@ -144,7 +136,7 @@ export class InputDate extends React.PureComponent {
 								<DatePickerIOS
 									date={this.state.chosenIOSDate}
 									onDateChange={this.setIOSDate}
-									mode={this.props.mode}
+									mode={'date'}
 									maximumDate={new Date()}
 									locale={'pt-BR'}
 								/>

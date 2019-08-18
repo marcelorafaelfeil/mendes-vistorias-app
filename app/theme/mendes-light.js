@@ -1,5 +1,4 @@
-import { StyleSheet, View } from 'react-native';
-import styled from 'styled-components';
+import { StyleSheet } from 'react-native';
 
 const PRIMARY_COLOR = '#06e2b5';
 const INPUT_HEIGHT = 48;
@@ -144,7 +143,7 @@ export const theme = StyleSheet.create({
 		width: '33.33333%'
 	},
 	separator: {
-		borderTopWidth: 1, 
+		borderTopWidth: 1,
 		borderTopColor: '#CCCCCC',
 		marginTop: 5,
 		marginBottom: 20
