@@ -1,8 +1,9 @@
-import { AsyncStorage } from 'react-native';
-import api from '../../../../../../services/interceptor/api';
-import { API } from '../../../../../../core/api-context';
-import { StringUtils } from '../../../../../../utils/string-utils';
 import Axios from 'axios';
+import { AsyncStorage } from 'react-native';
+import { API } from '../../../../../../core/api-context';
+import api from '../../../../../../services/interceptor/api';
+import { FormUtils } from './form-utils';
+import { MemoryFlags } from '../../../../../../utils/memory-flags';
 
 export class GeneralDataService {
 	constructor() {}
@@ -55,15 +56,16 @@ export class GeneralDataService {
 			`Sincronizando informações da inspeção [id=${inspection}]`
 		);
 		AsyncStorage.setItem(
-			`geleral@form@${inspection}`,
+			MemoryFlags.form(inspection),
 			JSON.stringify(data)
 		);
+
+		console.log('params: ', params);
 
 		return api
 			.put(API.SYNC_WITH_SYSTEM, params, {
 				cancelToken: GeneralDataService.cancelToken.token
 			})
-			.then(data => {})
 			.catch(err => {
 				console.error('Erro ao sincronizar dados.', err);
 			});
@@ -71,47 +73,30 @@ export class GeneralDataService {
 
 	static serializeData(data, inspection) {
 		return {
-			generalInspectionInformation: {
-				expedientFrom: data.expedientFrom,
-				expedientTo: data.expedientTo,
-				quantityOfEmployees: data.employeesQuantity,
-				areaSize: !!data.groundSize
-				? StringUtils.toFloat(data.groundSize)
-				: 0,
-				builtArea: !!data.builtArea
-				? StringUtils.toFloat(data.builtArea)
-				: 0,
-				inLocalSince: data.builtDate,
-				buildAge: data.builtAge,
-				quantityOfPavement: data.quantityOfPaviments,
-				valueOfConstruction: !!data.builtAmount
-					? StringUtils.toFloat(data.builtAmount)
-					: 0,
-				commercialActivity: !!data.comercialLocalActivity
-					? data.comercialLocalActivity
-					: 'NO',
-				condition: data.condition === '' ? null : data.condition,
-				whoFollowIR: data.nameIRFollower,
-				function: data.function,
-				phone: !!data.phone ? data.phone : '',
-				cellPhone: !!data.cellPhone ? data.cellPhone : '',
-				inspectorCpf: data.inspectorCPF,
-				inspectorName: data.inspectorName,
-				irDate: data.irDate,
-				risk: !data.riskItem
-					? null
-					: {
-							id: data.riskItem
-					  },
-				localActivity: data.localActivity,
-				riskNote: data.riskNote === '' ? null : data.riskNote,
-				justification: data.technicalJustification
-			},
+			generalInspectionInformation: GeneralDataService.prepareData(data),
 			inspection: {
 				id: inspection
 			}
 		};
 	}
+
+	static prepareData(data) {
+		const finalData = [];
+		for (let i = 0; i < data.length; i++) {
+			const d = data[i];
+			const type = FormUtils.getValueAsType(d.type);
+			const value = d[type];
+			finalData.push({
+				field: {
+					id: d.id
+				},
+				[type]: !!value ? value : null,
+				id: !!d.value ? d.value.id : null
+			});
+		}
+		return finalData;
+	}
+	
 	static unserializeData(response, inspection) {
 		const data = response.data;
 		return {
@@ -192,9 +177,26 @@ export class GeneralDataService {
 			.catch(err => {
 				console.error('Erro ao retornar os dados da inspeção: ', err);
 				var data = JSON.parse(
-					AsyncStorage.getItem(`geleral@form@${inspection}`)
+					AsyncStorage.getItem(MemoryFlags.form(inspection))
 				);
 				return data;
 			});
+	}
+
+	static mergeDataFormAndValues(form, values) {
+		console.log('values: ', values);
+		for ( var i = 0; i < form.length; i++) {
+			const f = form[i];
+			for ( var j = values.length-1; j >= 0; j--) {
+				console.log('j: ', j);
+				const v = values[j];
+				if ( f.id === v.field.id) {
+					const key = FormUtils.getValueAsType(f.type);
+					form[i][key] = v[key];
+					values.splice(j, 1);
+				}
+			}
+		}
+		return form;
 	}
 }

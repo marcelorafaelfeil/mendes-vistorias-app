@@ -42,10 +42,10 @@ export class InputDate extends React.PureComponent {
 
 			if (action !== DatePickerAndroid.dismissedAction) {
 				if (this.props.mode === 'datetime') {
-					var { actionTime, hour, minute } = await TimePickerAndroid.open();
+					var { action, hour, minute } = await TimePickerAndroid.open();
 				}
 
-				if (actionTime !== TimePickerAndroid.dismissedAction) {
+				if (action !== TimePickerAndroid.dismissedAction) {
 					var date = new Date(year, month, day, !!hour ? hour : 0, !!minute ? minute : 0);
 					this.setState({
 						value: moment(date).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),

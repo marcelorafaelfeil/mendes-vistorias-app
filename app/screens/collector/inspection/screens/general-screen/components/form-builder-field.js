@@ -5,6 +5,11 @@ import { Select } from '../../../../../../components/form/inputs/select/select';
 import { InputTimeRange } from '../../../../../../components/form/inputs/time/input-time-range';
 import { InputDate } from '../../../../../../components/form/inputs/date/input-date';
 import { theme } from '../../../../../../theme/mendes-light';
+import { Time } from '../../../../../../components/form/inputs/time/time';
+import { DateRange } from '../../../../../../components/form/inputs/date/date-range';
+import { StringUtils } from '../../../../../../utils/string-utils';
+import { GetData } from '../../../../../../utils/get-data';
+
 
 export class FormBuilderField extends React.Component {
 
@@ -35,7 +40,7 @@ export class FormBuilderField extends React.Component {
 	numericField(attrs) {
 		return (<InputText
 			keyboardType={'decimal-pad'}
-			onChangeText={(value) => {this.setState({ value }); this.props.onChange(attrs, value) }}
+			onChangeText={(value) => { this.setState({ value: parseInt(value) }); this.props.onChange(attrs, parseInt(value)) }}
 			value={this.state.value}
 			mask={'numeric'}
 			align={'center'}
@@ -61,7 +66,7 @@ export class FormBuilderField extends React.Component {
 					mask={'currency'}
 					caretHidden={true}
 					value={this.state.value}
-					onChangeText={(value) => { this.setState({ value }); this.props.onChange(attrs, value) }}
+					onChangeText={(value) => { this.setState({ value: StringUtils.toFloat(value) }); this.props.onChange(attrs, StringUtils.toFloat(value)) }}
 				/>
 			</View>
 		</View>);
@@ -74,7 +79,7 @@ export class FormBuilderField extends React.Component {
 				keyboardType={'numeric'}
 				mask={'metric'}
 				value={this.state.value}
-				onChangeText={(value) => { this.setState({ value }); this.props.onChange(attrs, value) }}
+				onChangeText={(value) => { this.setState({ value: StringUtils.toFloat(value) }); this.props.onChange(attrs, StringUtils.toFloat(value)) }}
 			/>);
 	}
 
@@ -112,14 +117,14 @@ export class FormBuilderField extends React.Component {
 		return (<Select
 			options={options}
 			value={this.props.value}
-			onSelect={(value) => { this.props.onChange(attrs, value) }}
+			onSelect={(value) => { this.props.onChange(attrs, parseInt(value)) }}
 		/>);
 	}
 
 	timeRangeField(attrs) {
 		return (<InputTimeRange
-			onChangeFrom={(value) => { this.rangeValue.from = value; this.props.onChange(attrs, this.rangeValue) }}
-			onChangeTo={(value) => { this.rangeValue.to = value; this.props.onChange(attrs, this.rangeValue) }}
+			onChangeFrom={(value) => { this.rangeValue.from = GetData.hoursInNumber(value); this.props.onChange(attrs, this.rangeValue) }}
+			onChangeTo={(value) => { this.rangeValue.to = GetData.hoursInNumber(value); this.props.onChange(attrs, this.rangeValue) }}
 			valueFrom={this.rangeValue.from}
 			valueTo={this.rangeValue.to}
 		/>);
@@ -133,7 +138,7 @@ export class FormBuilderField extends React.Component {
 			onChangeManual={(value) => { this.props.onChange(attrs, value) }}
 		/>);
 	}
-	
+
 	dateTimeField(attrs) {
 		return (<InputDate
 			keyboardType={'numeric'}
@@ -156,6 +161,21 @@ export class FormBuilderField extends React.Component {
 			options={options}
 			value={this.props.value}
 			onSelect={(value) => { this.props.onChange(attrs, value) }}
+		/>);
+	}
+
+	timeField(attrs) {
+		return (<Time
+			onChange={(value) => { this.setState({ value }); this.props.onChange(attrs, value) }}
+		/>);
+	}
+
+	dateRangeField(attrs) {
+		return (<DateRange
+			keyboardType={'numeric'}
+			mode={'datetime'}
+			onChangeFrom={(value) => { this.rangeValue.from = value; this.props.onChange(attrs, this.rangeValue) }}
+			onChangeTo={(value) => { this.rangeValue.to = value; this.props.onChange(attrs, this.rangeValue) }}
 		/>);
 	}
 
@@ -191,10 +211,10 @@ export class FormBuilderField extends React.Component {
 				fieldComponent = this.dateTimeField(attrs);
 				break;
 			case 'DATE_RANGE':
-				fieldComponent = this.textField(attrs);
+				fieldComponent = this.dateRangeField(attrs);
 				break;
 			case 'TIME':
-				fieldComponent = this.textField(attrs);
+				fieldComponent = this.timeField(attrs);
 				break;
 			case 'TIME_RANGE':
 				fieldComponent = this.timeRangeField(attrs);

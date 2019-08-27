@@ -1,9 +1,12 @@
 import { API } from '../../core/api-context';
+import { AsyncStorage } from 'react-native';
 import { FormatDashboardData } from '../../screens/collector/dashboard/format-dashboard-data';
 import { BindVariable } from '../../utils/bind-variable';
 import api from '../interceptor/api';
 import { PendencyValidation } from '../validation/pendency-validation';
 import { ObservationService } from '../../screens/collector/inspection/screens/observation-screen/services/observation-service';
+import { FormUtils } from '../../screens/collector/inspection/screens/general-screen/services/form-utils';
+import { MemoryFlags } from '../../utils/memory-flags';
 
 export class PendenciesService {
 	static selectedPendency;
@@ -36,12 +39,25 @@ export class PendenciesService {
 			});
 	};
 
-	static getFormByInspection(id) {
+	static getFormByInspection = async(id) => {
 		return api.get(API.GET_FORM_BY_INSPECTION, {
 			params: { id }
 		})
 			.then((response) => {
 				return response.data.fields;
+			})
+			.catch(err => {
+				console.warn('Erro ao buscar pendências: ', err);
+			});
+	}
+
+	static getFormValuesByInspection = async (inspectionId) => {
+		
+		return api.get(API.GET_FORM_VALUES_BY_INSPECTION, {
+			params: { inspectionId }
+		})
+			.then((response) => {
+				return response.data;
 			})
 			.catch(err => {
 				console.warn('Erro ao buscar pendências: ', err);
@@ -120,5 +136,52 @@ export class PendenciesService {
 				console.info('ERROR: Erro ao concluir a inspeção.');
 				console.error(err);
 			});
+	}
+
+	static isPendencyValid = async (id) => {
+		const json = await AsyncStorage.getItem(MemoryFlags.form(id));
+		const data = JSON.parse(json);
+		let isValid = true;
+
+		// Verifica se há algum campo obrigatório
+		if (!!data) {
+			data.forEach((field, index) => {
+				field['errors'] = null;
+				if (field.isRequired) {
+					const key = FormUtils.getValueAsType(field.type);
+					// Verifica se o valor é nulo
+					if (!field[key]) {
+						isValid = false;
+						// Adiciona uma chave de erro 
+						PendenciesService.addErrorInField(field, 'required', true);
+					}
+				}
+			});
+		} else {
+			isValid = false;
+		}
+		return {isValid, data};
+	}
+
+	static addErrorInField(field, flag, status) {
+		if (!field['errors']) {
+			field['errors'] = {};
+		}
+		Object.assign(field['errors'], {[flag]: status});
+	}
+
+	static getFormData = async (id) => {
+		const json = await AsyncStorage.getItem(MemoryFlags.form(id));
+		const data = JSON.parse(json);
+		return data;
+	}
+
+	static createForm = async (id, form) => {
+		const json = await AsyncStorage.getItem(MemoryFlags.form(id));
+		// Se não houver um formulário salvo
+		if (!(!!json)) {
+			// salva um formulário vazio
+			AsyncStorage.setItem(MemoryFlags.form(id), JSON.stringify(form));
+		}
 	}
 }

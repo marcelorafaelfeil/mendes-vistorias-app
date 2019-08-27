@@ -25,7 +25,7 @@ export class Finish extends Component {
 		this.setState({ showJustification: show });
 	};
 
-	concludeInspection = () => {
+	concludeInspection = async () => {
 		Alert.alert(
 			'Confirmação',
 			'Você tem certeza de que deseja concluir essa inspeção? Certifique-se de que todos os dados estão preenchidos.',
@@ -36,15 +36,19 @@ export class Finish extends Component {
 				},
 				{
 					text: 'Confirmar',
-					onPress: () => {
-						this.setState({ loading: true });
-						PendenciesService.concludeInspection(
-							this.props.inspection,
-							this.state.frustrateJustification
-						).then(data => {
-							this.setState({ loading: false });
-							this.props.onFrustrate(data);
-						});
+					onPress: async () => {
+						const validation = await PendenciesService.isPendencyValid(this.props.inspection);
+						if (validation.isValid) {
+							this.setState({ loading: true });
+							PendenciesService.concludeInspection(
+								this.props.inspection,
+								this.state.frustrateJustification
+							).then(data => {
+								this.setState({ loading: false });
+								this.props.onConclude(data);
+							});
+						}
+						this.props.onInvalid(validation);
 					}
 				}
 			]

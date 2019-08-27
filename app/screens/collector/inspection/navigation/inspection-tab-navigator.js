@@ -42,11 +42,11 @@ export const InspectionTabNavigator = createBottomTabNavigator(
 		Recomendações: {
 			screen: RecomendationScreen
 		} */
-	},
+	}, 
 	{
-		initialRouteParams: {
+		/* initialRouteParams: {
 			inspection: 1
-		},
+		}, */
 		initialRouteName: Config.INSPECTION_INICIAL_SCREEN,
 		defaultNavigationOptions: ({ navigation }) => ({
 			tabBarIcon: ({ focused, horizontal, tintColor }) => {

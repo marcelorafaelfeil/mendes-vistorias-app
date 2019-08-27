@@ -35,9 +35,9 @@ api.interceptors.response.use((response) => {
 		return null;
 	} else if (!!error && !!error.response) {
 		if (!!error && !!error.response && !!error.response.data) {
-			console.log(error.response.data);
+			console.error(error.response.data);
 		} else {
-			console.log(error.response);
+			console.error(error.response);
 		}
 		Promise.reject(error);
 	}

@@ -142,10 +142,19 @@ export const theme = StyleSheet.create({
 	'column-SM': {
 		width: '33.33333%'
 	},
+	column: {
+		flex: 1,
+		padding: 5
+	},
 	separator: {
 		borderTopWidth: 1,
 		borderTopColor: '#CCCCCC',
 		marginTop: 5,
 		marginBottom: 20
+	},
+	formError: {
+		color: '#F84949',
+		fontWeight: 'bold',
+		paddingLeft: 5
 	}
 });

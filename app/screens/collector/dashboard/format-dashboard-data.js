@@ -56,9 +56,12 @@ export class FormatDashboardData {
 			quantity = diffHours;
 			unit = 'horas';
 		}
-		if (diffHours < -24) {
+		if (diffHours >= 24 || diffHours <= -24) {
 			quantity = diffDays;
 			unit = 'dias'
+		}
+		if (quantity < 0) {
+			quantity = quantity*(-1);
 		}
 		return {quantity, minutes, unit};
 	}

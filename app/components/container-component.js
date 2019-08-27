@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, RefreshControl } from 'react-native';
 
 export class ContainerComponent extends React.PureComponent {
 	render() {

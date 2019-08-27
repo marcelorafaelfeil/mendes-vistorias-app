@@ -1,17 +1,21 @@
 import { Platform } from '@unimodules/core';
+import moment from 'moment';
 import React from 'react';
-import { DatePickerIOS, Modal, Text, TimePickerAndroid, TouchableWithoutFeedback, View } from 'react-native';
+import { DatePickerAndroid, DatePickerIOS, Modal, Text, TimePickerAndroid, TouchableWithoutFeedback, View } from 'react-native';
 import { theme } from '../../../../theme/mendes-light';
 import { GetData } from '../../../../utils/get-data';
 import { ButtonComponent } from '../../../button-component';
 
-export class InputTimeRange extends React.Component {
+export class DateRange extends React.Component {
+
 	state = {
 		field: '',
 		isTimeModalVisible: false,
-		chosenTime: new Date(),
-		timeFrom: null,
-		timeTo: null
+		chosenDate: new Date(),
+		dateFrom: null,
+		dateTo: null,
+		dateFromValue: '',
+		dateToValue: ''
 	};
 
 	constructor(props) {
@@ -21,58 +25,80 @@ export class InputTimeRange extends React.Component {
 
 	componentWillMount() {
 		this.setState({
-			timeFrom: !!this.props.valueFrom ? GetData.numberInHoursToDate(this.props.valueFrom) : null,
-			timeTo: !!this.props.valueTo ? GetData.numberInHoursToDate(this.props.valueTo) : null
+			dateFrom: !!this.props.valueFrom ? GetData.numberInHoursToDate(this.props.valueFrom) : null,
+			dateTo: !!this.props.valueTo ? GetData.numberInHoursToDate(this.props.valueTo) : null
 		});
 	}
 
 	async open(field) {
 		var placeholder =
 			field === 'from'
-				? this.state.timeFrom !== null
-					? this.state.timeFrom
+				? this.state.dateFrom !== null
+					? this.state.dateFrom
 					: new Date()
-				: this.state.timeTo !== null
-					? this.state.timeTo
+				: this.state.dateTo !== null
+					? this.state.dateTo
 					: new Date();
-		this.setState({ field, chosenTime: placeholder });
+		this.setState({ field, chosenDate: placeholder });
 
 		if (Platform.OS === 'android') {
-			var { action, hour, minute } = await TimePickerAndroid.open({
-				mode: 'clock',
-				is24Hour: true,
-				hour: placeholder.getHours(),
-				minute: placeholder.getMinutes()
-			});
+			const dateOptions = {
+				date: new Date()
+			};
+			if (!!this.state.dateTo) {
+				dateOptions.maxDate = this.state.dateTo;
+			}
+			if (!!this.state.dateFrom) {
+				dateOptions.minDate = this.state.dateFrom;
+			}
+			var { action, year, month, day } = await DatePickerAndroid.open(dateOptions);
 
-			if (action !== TimePickerAndroid.dismissedAction) {
-				var time = new Date();
-				time.setHours(hour);
-				time.setMinutes(minute);
-				this.setState({
-					chosenTime: time
-				});
-				this.chosenTime();
+			if (action !== DatePickerAndroid.dismissedAction) {
+				if (this.props.mode === 'datetime') {
+					var { action, hour, minute } = await TimePickerAndroid.open({
+						mode: 'clock',
+						is24Hour: true,
+						hour: placeholder.getHours(),
+						minute: placeholder.getMinutes()
+					});
+				}
+
+				if (action !== TimePickerAndroid.dismissedAction) {
+					var date = new Date(year, month, day, !!hour ? hour : 0, !!minute ? minute : 0);
+					this.setState({
+						chosenDate: date
+					});
+					this.chosenDate();
+					this.setState({
+						value: moment(date).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),
+						chosenIOSDate: date
+					});
+					if (!!this.props.onChangeCalendar) {
+						this.props.onChangeCalendar(this.state.chosenIOSDate);
+					}
+				}
 			}
 		} else if (Platform.OS === 'ios') {
 			this.openTimeModal();
 		}
 	}
 
-	chosenTime() {
+	chosenDate() {
 		if (this.state.field === 'from') {
 			this.setState({
-				timeFrom: this.state.chosenTime
+				dateFrom: this.state.chosenDate,
+				dateFromValue: moment(this.state.chosenDate).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),
 			});
 			if (!!this.props.onChangeFrom) {
-				this.props.onChangeFrom(this.state.chosenTime);
+				this.props.onChangeFrom(this.state.chosenDate);
 			}
 		} else if (this.state.field === 'to') {
 			this.setState({
-				timeTo: this.state.chosenTime
+				dateTo: this.state.chosenDate,
+				dateToValue: moment(this.state.chosenDate).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),
 			});
 			if (!!this.props.onChangeTo) {
-				this.props.onChangeTo(this.state.chosenTime);
+				this.props.onChangeTo(this.state.chosenDate);
 			}
 		}
 		this.setState({
@@ -89,7 +115,7 @@ export class InputTimeRange extends React.Component {
 	}
 
 	setDate(newDate) {
-		this.setState({ chosenTime: newDate });
+		this.setState({ chosenDate: newDate });
 	}
 
 	render() {
@@ -99,8 +125,8 @@ export class InputTimeRange extends React.Component {
 					<TouchableWithoutFeedback onPress={() => this.open('from')}>
 						<View style={[theme.inputGroupItem, theme.inputRange]}>
 							<Text style={theme.inputTextRange}>
-								{this.state.timeFrom !== null
-									? GetData.getTime(this.state.timeFrom)
+								{this.state.dateFrom !== null
+									? this.state.dateFromValue
 									: this.props.placeholderFrom}
 							</Text>
 						</View>
@@ -111,13 +137,13 @@ export class InputTimeRange extends React.Component {
 							theme.inputGroupLabel
 						]}
 					>
-						<Text style={theme.inputGroupLabelText}>às</Text>
+						<Text style={theme.inputGroupLabelText}>até</Text>
 					</View>
 					<TouchableWithoutFeedback onPress={() => this.open('to')}>
 						<View style={[theme.inputGroupItem, theme.inputRange]}>
 							<Text style={theme.inputTextRange}>
-								{this.state.timeTo !== null
-									? GetData.getTime(this.state.timeTo)
+								{this.state.dateTo !== null
+									? this.state.dateToValue
 									: this.props.placeholderTo}
 							</Text>
 						</View>
@@ -140,7 +166,7 @@ export class InputTimeRange extends React.Component {
 									Selecione a hora
 								</Text>
 								<DatePickerIOS
-									date={this.state.chosenTime}
+									date={this.state.chosenDate}
 									onDateChange={this.setDate}
 									mode={'time'}
 								/>
@@ -162,7 +188,7 @@ export class InputTimeRange extends React.Component {
 									</View>
 									<View style={{ flex: 1, marginLeft: 5 }}>
 										<ButtonComponent
-											onPress={() => this.chosenTime()}
+											onPress={() => this.chosenDate()}
 											primary
 										>
 											Confirmar

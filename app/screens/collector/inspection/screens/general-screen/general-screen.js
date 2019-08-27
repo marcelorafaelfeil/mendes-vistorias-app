@@ -10,6 +10,7 @@ import { RisksService } from '../../../../../services/rest/risks-service';
 import { Header } from '../../../includes/header/header';
 import { GeneralFormComponent } from './components/general-form-component';
 import { GeneralDataService } from './services/general-data-service';
+import { FormUtils } from './services/form-utils';
 
 export class GeneralScreen extends React.Component {
 	state = {
@@ -26,34 +27,43 @@ export class GeneralScreen extends React.Component {
 	}
 
 	async componentWillMount() {
-		var data = await GeneralDataService.getData(this.state.inspection);
-		const formBuilder = await PendenciesService.getFormByInspection(this.state.inspection)
+		// var data = await GeneralDataService.getData(this.state.inspection);
+		const formBuilder = await PendenciesService.getFormByInspection(this.state.inspection);
+		const formValues = await PendenciesService.getFormValuesByInspection(this.state.inspection);
+		const form = GeneralDataService.mergeDataFormAndValues(formBuilder, formValues);
+		console.log(form);
+		// Verifica se há um formulário já salvo
+		PendenciesService.createForm(this.state.inspection, formBuilder);
 
-		const optionsRisks = await RisksService.getRisks().then(data => {
-			return data;
-		});
 		this.setState({
-			optionsRisks,
 			loaded: true,
-			data,
+			// data,
 			formBuilder
 		});
 	}
 
-	saveData(value, name) {
-		this.state.data[name] = value;
-		this.setState(
-			state => ({
-				data: {
-					...state.data,
-					[name]: value
+	_bindData = response => {
+		const data = response.data;
+		const form = this.state.form;
+		/* form.forEach((f, index) => {
+			data.forEach(d => {
+				if (f.id === d.field.id) {
+					form[index][key] = d[key];
 				}
-			}),
+			});
+		})
+		console.log('form: ', form); */
+	}
+
+	saveData(form) {
+		//this.state.data[name] = value;
+		this.setState(
+			state => ({ form }),
 			() => {
 				if (!!this.intervalOfSync) {
 					clearTimeout(this.intervalOfSync);
 				}
-				this.intervalOfSync = setTimeout(() => GeneralDataService.syncWithSystem(this.state.data, this.state.inspection), 3000);
+				this.intervalOfSync = setTimeout(() => GeneralDataService.syncWithSystem(form, this.state.inspection).then(this._bindData), 3000);
 			}
 		);
 	}

@@ -12,5 +12,6 @@ export const API = {
 	REMOVE_PHOTOS: `${API_CONTEXT}/app/inspection/photo`,
 	CONCLUDE_INSPECTION: `${API_CONTEXT}/app/inspection/conclude`,
 	FRUSTRATE_INSPECTION: `${API_CONTEXT}/app/inspection/frustrate`,
-	GET_FORM_BY_INSPECTION: `${API_CONTEXT}/inspection/formBuilder`
-};
+	GET_FORM_BY_INSPECTION: `${API_CONTEXT}/inspection/formBuilder`,
+	GET_FORM_VALUES_BY_INSPECTION: `${API_CONTEXT}/inspection/formValues`
+}; 

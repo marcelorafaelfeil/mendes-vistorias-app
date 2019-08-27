@@ -1,21 +1,14 @@
+import { Platform } from '@unimodules/core';
 import React from 'react';
-import {
-	FlatList,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TouchableHighlight,
-	View
-} from 'react-native';
+import { RefreshControl, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { ContainerComponent } from '../../../components/container-component';
 import { CustomSafeView } from '../../../components/custom-safe-view';
+import { Empty } from '../../../components/empty';
 import { ListItem } from '../../../components/list/list-item';
 import { CustomActivityIndicatorComponent } from '../../../components/loading/custom-activity-indicator-component';
 import { PendenciesService } from '../../../services/rest/pendencies-service';
 import { GetData } from '../../../utils/get-data';
 import { Header } from '../includes/header/header';
-import { Empty } from '../../../components/empty';
-import { Platform } from '@unimodules/core';
 
 export class DashboardScreen extends React.Component {
 	static navigationOptions = {
@@ -25,6 +18,7 @@ export class DashboardScreen extends React.Component {
 
 	state = {
 		loaded: 1,
+		refreshing: false,
 		latePendencies: [],
 		deadlinePendencies: [],
 		newPendencies: []
@@ -63,8 +57,8 @@ export class DashboardScreen extends React.Component {
 					label={data.item.id + ' - ' + data.item.name}
 					description={GetData.getAddress(data.item.address)}
 					status={status}
-					time={2}
-					unit={'dias'}
+					time={data.item.time.quantity}
+					unit={data.item.unit}
 				/>
 			</TouchableHighlight>
 		);
@@ -85,41 +79,52 @@ export class DashboardScreen extends React.Component {
 		}
 	}
 
+	onRefresh = () => {
+		this.setState({
+			refreshing: true
+		});
+		this.loadPedencies().then(() => {
+			this.setState({
+				refreshing: false
+			});
+		});
+	}
+
 	render() {
 		if (this.state.loaded > 0) {
 			return <CustomActivityIndicatorComponent />;
 		} else {
 			return (
 				<CustomSafeView>
-					<ScrollView style={styles.content}>
-						<ContainerComponent>
+					<ScrollView styles={styles.content} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}>
+						<ContainerComponent refreshing={this.state.refreshing} onRefresh={this.onRefresh}>
 							<Header showSettings>Dashboard</Header>
 							{(!!this.state.latePendencies &&
 								this.state.latePendencies.length > 0) ||
-							(!!this.state.deadlinePendencies &&
-								this.state.deadlinePendencies.length > 0) ||
-							(!!this.state.newPendencies &&
-								this.state.newPendencies.length > 0) ? (
-								<View>
-									{this.renderPendencies(
-										'Inspeções atrasadas',
-										'danger',
-										this.state.latePendencies
-									)}
-									{this.renderPendencies(
-										'Inspeções a vencer',
-										'warning',
-										this.state.deadlinePendencies
-									)}
-									{this.renderPendencies(
-										'Novas inspeções',
-										'success',
-										this.state.newPendencies
-									)}
-								</View>
-							) : (
-								<Empty />
-							)}
+								(!!this.state.deadlinePendencies &&
+									this.state.deadlinePendencies.length > 0) ||
+								(!!this.state.newPendencies &&
+									this.state.newPendencies.length > 0) ? (
+									<View>
+										{this.renderPendencies(
+											'Inspeções atrasadas',
+											'danger',
+											this.state.latePendencies
+										)}
+										{this.renderPendencies(
+											'Inspeções a vencer',
+											'warning',
+											this.state.deadlinePendencies
+										)}
+										{this.renderPendencies(
+											'Novas inspeções',
+											'success',
+											this.state.newPendencies
+										)}
+									</View>
+								) : (
+									<Empty />
+								)}
 						</ContainerComponent>
 					</ScrollView>
 				</CustomSafeView>
