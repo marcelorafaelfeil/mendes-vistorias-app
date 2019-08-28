@@ -6,11 +6,9 @@ import { ContainerComponent } from '../../../../../components/container-componen
 import { CustomSafeView } from '../../../../../components/custom-safe-view';
 import { CustomActivityIndicatorComponent } from '../../../../../components/loading/custom-activity-indicator-component';
 import { PendenciesService } from '../../../../../services/rest/pendencies-service';
-import { RisksService } from '../../../../../services/rest/risks-service';
 import { Header } from '../../../includes/header/header';
 import { GeneralFormComponent } from './components/general-form-component';
 import { GeneralDataService } from './services/general-data-service';
-import { FormUtils } from './services/form-utils';
 
 export class GeneralScreen extends React.Component {
 	state = {
@@ -30,8 +28,7 @@ export class GeneralScreen extends React.Component {
 		// var data = await GeneralDataService.getData(this.state.inspection);
 		const formBuilder = await PendenciesService.getFormByInspection(this.state.inspection);
 		const formValues = await PendenciesService.getFormValuesByInspection(this.state.inspection);
-		const form = GeneralDataService.mergeDataFormAndValues(formBuilder, formValues);
-		console.log(form);
+		GeneralDataService.mergeDataFormAndValues(formBuilder, formValues);
 		// Verifica se há um formulário já salvo
 		PendenciesService.createForm(this.state.inspection, formBuilder);
 
@@ -45,14 +42,13 @@ export class GeneralScreen extends React.Component {
 	_bindData = response => {
 		const data = response.data;
 		const form = this.state.form;
-		/* form.forEach((f, index) => {
+		form.forEach((f, index) => {
 			data.forEach(d => {
 				if (f.id === d.field.id) {
-					form[index][key] = d[key];
+					form[index]['value_id'] = d.id;
 				}
 			});
 		})
-		console.log('form: ', form); */
 	}
 
 	saveData(form) {

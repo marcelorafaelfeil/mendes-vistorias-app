@@ -60,8 +60,7 @@ export class GeneralDataService {
 			JSON.stringify(data)
 		);
 
-		console.log('params: ', params);
-
+		//console.log('params: ', params);
 		return api
 			.put(API.SYNC_WITH_SYSTEM, params, {
 				cancelToken: GeneralDataService.cancelToken.token
@@ -86,13 +85,22 @@ export class GeneralDataService {
 			const d = data[i];
 			const type = FormUtils.getValueAsType(d.type);
 			const value = d[type];
-			finalData.push({
+			const item = {
 				field: {
 					id: d.id
 				},
-				[type]: !!value ? value : null,
-				id: !!d.value ? d.value.id : null
-			});
+				id: !!d.value_id ? d.value_id : null
+			};
+			if (!!value && (!!value.from || !!value.to)) {
+				item[type] = value.from;
+				item[type+'2'] = value.to;
+			} else {
+				item[type] = !!value ? value : null;
+				if (!!d[type+'2']) {
+					item[type + '2'] = d[type + '2'];
+				}
+			}
+			finalData.push(item);
 		}
 		return finalData;
 	}
@@ -184,15 +192,17 @@ export class GeneralDataService {
 	}
 
 	static mergeDataFormAndValues(form, values) {
-		console.log('values: ', values);
 		for ( var i = 0; i < form.length; i++) {
 			const f = form[i];
 			for ( var j = values.length-1; j >= 0; j--) {
-				console.log('j: ', j);
 				const v = values[j];
 				if ( f.id === v.field.id) {
 					const key = FormUtils.getValueAsType(f.type);
 					form[i][key] = v[key];
+					if (!!v[key+'2']) {
+						form[i][key+'2'] = v[key+'2'];
+					}
+					form[i]['value_id'] = v.id;
 					values.splice(j, 1);
 				}
 			}

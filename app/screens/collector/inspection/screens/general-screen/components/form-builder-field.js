@@ -9,6 +9,7 @@ import { Time } from '../../../../../../components/form/inputs/time/time';
 import { DateRange } from '../../../../../../components/form/inputs/date/date-range';
 import { StringUtils } from '../../../../../../utils/string-utils';
 import { GetData } from '../../../../../../utils/get-data';
+var _ = require('lodash');
 
 
 export class FormBuilderField extends React.Component {
@@ -21,17 +22,22 @@ export class FormBuilderField extends React.Component {
 		value: ''
 	}
 
+	componentWillMount = function() {
+		const value = this.props.value;
+		this.setState({value});
+	}
+
 	textField(attrs) {
 		return (<InputText
-			value={this.props.value}
-			onChangeText={(value) => { this.props.onChange(attrs, value) }}
+			value={this.state.value}
+			onChangeText={(value) => { this.setState({value}); this.props.onChange(attrs, value) }}
 		/>);
 	}
 
 	largeTextField(attrs) {
 		return (<InputText
-			value={this.props.value}
-			onChangeText={(value) => { this.props.onChange(attrs, value) }}
+			value={this.state.value}
+			onChangeText={(value) => { this.setState({value}); this.props.onChange(attrs, value) }}
 			multiline={true}
 			autoGrow={true}
 		/>);
@@ -85,22 +91,22 @@ export class FormBuilderField extends React.Component {
 
 	emailField(attrs) {
 		return (<InputText
-			onChangeText={(value) => { this.props.onChange(attrs, value) }}
+			onChangeText={(value) => { this.setState({value}); this.props.onChange(attrs, value) }}
 			keyboardType={'email-address'}
 			autoCompleteType={'email'}
 			autoCapitalize={'none'}
-			value={this.props.value}
+			value={this.state.value}
 		/>);
 	}
 
 	urlField(attrs) {
 		return (<InputText
-			onChangeText={(value) => { this.props.onChange(attrs, value) }}
+			onChangeText={(value) => { this.setState({value}); this.props.onChange(attrs, value) }}
 			keyboardType={'url'}
 			autoCapitalize={'none'}
 			textContentType={'URL'}
 			keyboardApparence={'dark'}
-			value={this.props.value}
+			value={this.state.value}
 		/>);
 	}
 
@@ -116,24 +122,28 @@ export class FormBuilderField extends React.Component {
 		}
 		return (<Select
 			options={options}
-			value={this.props.value}
-			onSelect={(value) => { this.props.onChange(attrs, parseInt(value)) }}
+			value={this.state.value}
+			onSelect={(value) => { this.setState({value}); this.props.onChange(attrs, parseInt(value)) }}
 		/>);
 	}
 
 	timeRangeField(attrs) {
+		this.rangeValue = {
+			from: this.props.value,
+			to: this.props.value2
+		}
 		return (<InputTimeRange
 			onChangeFrom={(value) => { this.rangeValue.from = GetData.hoursInNumber(value); this.props.onChange(attrs, this.rangeValue) }}
 			onChangeTo={(value) => { this.rangeValue.to = GetData.hoursInNumber(value); this.props.onChange(attrs, this.rangeValue) }}
-			valueFrom={this.rangeValue.from}
-			valueTo={this.rangeValue.to}
+			valueFrom={this.props.value}
+			valueTo={this.props.value2}
 		/>);
 	}
 
 	dateField(attrs) {
 		return (<InputDate
 			keyboardType={'numeric'}
-			valueAsInteger={this.props.value}
+			valueAsInteger={this.state.value}
 			onChangeCalendar={(value) => { this.props.onChange(attrs, value) }}
 			onChangeManual={(value) => { this.props.onChange(attrs, value) }}
 		/>);
@@ -159,21 +169,28 @@ export class FormBuilderField extends React.Component {
 		}];
 		return (<Select
 			options={options}
-			value={this.props.value}
-			onSelect={(value) => { this.props.onChange(attrs, value) }}
+			value={this.state.value}
+			onSelect={(value) => { this.setState({value}); this.props.onChange(attrs, value) }}
 		/>);
 	}
 
 	timeField(attrs) {
 		return (<Time
-			onChange={(value) => { this.setState({ value }); this.props.onChange(attrs, value) }}
+			value={this.state.value}
+			onChange={(value) => { this.setState({ value }); this.props.onChange(attrs, GetData.hoursInNumber(value)) }}
 		/>);
 	}
 
 	dateRangeField(attrs) {
+		this.rangeValue = {
+			from: new Date(this.props.value),
+			to: new Date(this.props.value2)
+		}
 		return (<DateRange
 			keyboardType={'numeric'}
 			mode={'datetime'}
+			valueFrom={this.props.value}
+			valueTo={this.props.value2}
 			onChangeFrom={(value) => { this.rangeValue.from = value; this.props.onChange(attrs, this.rangeValue) }}
 			onChangeTo={(value) => { this.rangeValue.to = value; this.props.onChange(attrs, this.rangeValue) }}
 		/>);

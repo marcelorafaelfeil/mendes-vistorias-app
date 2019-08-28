@@ -25,8 +25,10 @@ export class DateRange extends React.Component {
 
 	componentWillMount() {
 		this.setState({
-			dateFrom: !!this.props.valueFrom ? GetData.numberInHoursToDate(this.props.valueFrom) : null,
-			dateTo: !!this.props.valueTo ? GetData.numberInHoursToDate(this.props.valueTo) : null
+			dateFrom: !!this.props.valueFrom ? new Date(this.props.valueFrom) : null,
+			dateFromValue: moment(new Date(this.props.valueFrom)).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),
+			dateTo: !!this.props.valueTo ? new Date(this.props.valueTo) : null,
+			dateToValue: moment(new Date(this.props.valueTo)).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'),
 		});
 	}
 

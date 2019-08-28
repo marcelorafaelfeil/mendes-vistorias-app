@@ -22,14 +22,14 @@ export class InputDate extends React.PureComponent {
 
 	componentWillMount() {
 		var value;
-		if (!!this.props.valueAsInteger) {
-			value = new Date(this.props.valueAsInteger);
+		if (!!this.props.valueAsInteger || this.props.valueAsString) {
+			value = new Date(!!this.props.valueAsInteger ? this.props.valueAsInteger : this.props.valueAsString);
 		} else if (!!this.props.valueAsDate) {
-			value = this.valueAsDate;
+			value = this.props.valueAsDate;
 		}
 		this.setState({
 			chosenIOSDate: !!value ? value : new Date(),
-			value: !!value ? value.toLocaleDateString() : ''
+			value: !!value ? moment(value).format(this.props.mode === 'datetime' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY') : ''
 		});
 	}
 

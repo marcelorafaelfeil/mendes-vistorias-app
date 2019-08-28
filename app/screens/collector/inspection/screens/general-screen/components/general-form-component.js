@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { LabelComponent } from '../../../../../../components/label-component';
 import { CustomActivityIndicatorComponent } from '../../../../../../components/loading/custom-activity-indicator-component';
 import { theme } from '../../../../../../theme/mendes-light';
@@ -56,6 +56,7 @@ export class GeneralFormComponent extends React.PureComponent {
 								type={f.type}
 								options={!!f.options ? f.options : []}
 								value={f[FormUtils.getValueAsType(f.type)]}
+								value2={!!f[FormUtils.getValueAsType(f.type) + '2'] ? f[FormUtils.getValueAsType(f.type) + '2'] : null}
 								onChange={(data, value) => this.bindValue(data, value)}
 							></FormBuilderField>
 						</View>

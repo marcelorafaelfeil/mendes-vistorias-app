@@ -25,7 +25,7 @@ export class Select extends React.Component {
 			!!options
 		) {
 			const value = options.find(o => o.value === this.props.value);
-			this.setState({ originalValue: value });
+			this.setState({ originalValue: value, value: value });
 		}
 	}
 

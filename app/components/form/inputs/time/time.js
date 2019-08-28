@@ -12,6 +12,13 @@ export class Time extends React.Component {
 		chosenTime: new Date()
 	}
 
+	componentWillMount = function() {
+		if (!!this.props.value) {
+			const value = GetData.numberInHoursToDate(this.props.value);
+			this.setState({time: value});
+		}
+	}
+
 	async open() {
 		var placeholder = this.state.time !== null ? this.state.time : new Date();
 
