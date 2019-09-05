@@ -7,14 +7,15 @@ import { CustomSafeView } from '../../../../../components/custom-safe-view';
 import { CustomActivityIndicatorComponent } from '../../../../../components/loading/custom-activity-indicator-component';
 import { Header } from '../../../includes/header/header';
 import GridPhotosComponent from './component/grid-photos-component';
-import { InspectionPhotoPlaceholderComponent } from './component/inspection-photo-placeholder-component';
 import PhotosService from './services/photos-service';
+import * as _ from 'lodash';
 
 export class InspectionScreen extends React.Component {
 	state = {
 		inspection: this.props.navigation.getParam('inspection'),
 		photos: [],
-		loaded: false
+		loaded: false,
+		photosTemplate: {}
 	};
 
 	constructor(props) {
@@ -23,13 +24,15 @@ export class InspectionScreen extends React.Component {
 		this.removePhoto = this.removePhoto.bind(this);
 	}
 
-	async componentDidMount() {
+	componentDidMount = async() => {
+		const photosTemplate = await PhotosService.getPhotosTemplate(this.state.inspection);
 		this.getPermissionAsync();
 		const photos = await PhotosService.loadPhotosOfStorage(
 			this.state.inspection
 		);
 		this.setState({
 			photos,
+			photosTemplate,
 			loaded: true
 		});
 	}
@@ -51,19 +54,20 @@ export class InspectionScreen extends React.Component {
 	/**
 	 * @description Salva a foto na memória do celular e também salva a foto no banco de dados.
 	 */
-	savePhoto(photo) {
+	savePhoto(photo, template) {
 		if (!photo.cancelled) {
+			photo.template = !!template ? template : null;
 			const photos = this.state.photos;
-			photo.loading = true;
-			photo.completed = false;
 			const index = photos.push(photo) - 1;
-			this.setState({ photos });
-
 			// Salva a foto na memória do celular
 			AsyncStorage.setItem(
 				PhotosService.TAG_PHOTOS + this.state.inspection,
 				JSON.stringify(photos)
 			);
+			photo.loading = true;
+			photo.completed = false;
+			this.setState({ photos });
+
 
 			// Salva a foto no banco de dados
 			PhotosService.savePhoto(photo, this.state.inspection).then(
@@ -88,6 +92,12 @@ export class InspectionScreen extends React.Component {
 
 	removePhoto(index) {
 		const photos = this.state.photos;
+		if (!!photos[index] && !!photos[index].template) {
+			const photosTemplate = this.state.photosTemplate;
+			if (!!photosTemplate && !!photosTemplate.photosTemplateItems) {
+				photosTemplate.photosTemplateItems.push(photos[index].template);
+			}
+		}
 		if (!!photos[index].id) {
 			PhotosService.removePhoto(photos[index].id);
 		}
@@ -108,17 +118,12 @@ export class InspectionScreen extends React.Component {
 			<CustomSafeView>
 				<ScrollView>
 					<Header>Inspecionar</Header>
-					{this.state.photos.length === 0 ? (
-						<InspectionPhotoPlaceholderComponent
-							onFinish={this.savePhoto}
-						/>
-					) : (
-						<GridPhotosComponent
-							onRemove={this.removePhoto}
-							onFinish={this.savePhoto}
-							photos={this.state.photos}
-						/>
-					)}
+					<GridPhotosComponent
+						photosTemplate={this.state.photosTemplate}
+						onRemove={this.removePhoto}
+						onFinish={this.savePhoto}
+						photos={this.state.photos}
+					/>
 				</ScrollView>
 			</CustomSafeView>
 		);

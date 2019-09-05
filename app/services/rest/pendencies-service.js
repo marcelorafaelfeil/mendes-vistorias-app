@@ -7,14 +7,15 @@ import { PendencyValidation } from '../validation/pendency-validation';
 import { ObservationService } from '../../screens/collector/inspection/screens/observation-screen/services/observation-service';
 import { FormUtils } from '../../screens/collector/inspection/screens/general-screen/services/form-utils';
 import { MemoryFlags } from '../../utils/memory-flags';
+import PhotosService from '../../screens/collector/inspection/screens/inspection-screen/services/photos-service';
 
 export class PendenciesService {
 	static selectedPendency;
 
 	static getMyPendencies = () => {
-		return api.get(API.GET_MY_PENDENCIES, {
-		})
-			.then((response) => {
+		return api
+			.get(API.GET_MY_PENDENCIES, {})
+			.then(response => {
 				if (!!response && !!response.data) {
 					const data = response.data;
 					const formatter = new FormatDashboardData(data);
@@ -39,36 +40,38 @@ export class PendenciesService {
 			});
 	};
 
-	static getFormByInspection = async(id) => {
-		return api.get(API.GET_FORM_BY_INSPECTION, {
-			params: { id }
-		})
-			.then((response) => {
+	static getFormByInspection = async id => {
+		return api
+			.get(API.GET_FORM_BY_INSPECTION, {
+				params: { id }
+			})
+			.then(response => {
 				return response.data.fields;
 			})
 			.catch(err => {
 				console.warn('Erro ao buscar pendências: ', err);
 			});
-	}
+	};
 
-	static getFormValuesByInspection = async (inspectionId) => {
-		
-		return api.get(API.GET_FORM_VALUES_BY_INSPECTION, {
-			params: { inspectionId }
-		})
-			.then((response) => {
+	static getFormValuesByInspection = async inspectionId => {
+		return api
+			.get(API.GET_FORM_VALUES_BY_INSPECTION, {
+				params: { inspectionId }
+			})
+			.then(response => {
 				return response.data;
 			})
 			.catch(err => {
 				console.warn('Erro ao buscar pendências: ', err);
 			});
-	}
+	};
 
 	static getPendency = id => {
 		const url = BindVariable.bind(API.GET_PENDENCY, { id });
-		return api.get(url, {
-			method: 'GET'
-		})
+		return api
+			.get(url, {
+				method: 'GET'
+			})
 			.then(({ data }) => {
 				PendenciesService.selectedPendency = data;
 				return data;
@@ -78,10 +81,10 @@ export class PendenciesService {
 			});
 	};
 
-	static savePendency = (data) => {
+	static savePendency = data => {
 		const validation = new PendencyValidation(data);
 		validation.validateGeneralData();
-	}
+	};
 
 	static getFormPendencyForm = () => {
 		if (
@@ -89,99 +92,155 @@ export class PendenciesService {
 			!!PendenciesService.selectedPendency.insurerProduct &&
 			!!PendenciesService.selectedPendency.insurerProduct.product &&
 			!!PendenciesService.selectedPendency.insurerProduct.product.form &&
-			!!PendenciesService.selectedPendency.insurerProduct.product.form.fields
+			!!PendenciesService.selectedPendency.insurerProduct.product.form
+				.fields
 		) {
-			const fields = PendenciesService.selectedPendency.insurerProduct.product.form.fields;
+			const fields =
+				PendenciesService.selectedPendency.insurerProduct.product.form
+					.fields;
 			return fields;
 		}
-		return []
-	}
+		return [];
+	};
 
 	static frustrateInspection = (id, justification) => {
-		console.info(`Frustrar inspeção [id=${id}, justification=${justification}]`);
-		return api.post(API.FRUSTRATE_INSPECTION, {
-			inspection: { id },
-			observation: {
-				content: justification
-			}
-		}, {
-				headers: {
-					'Content-Type': 'application/json'
+		console.info(
+			`Frustrar inspeção [id=${id}, justification=${justification}]`
+		);
+		return api
+			.post(
+				API.FRUSTRATE_INSPECTION,
+				{
+					inspection: { id },
+					observation: {
+						content: justification
+					}
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			}).then(data => {
+			)
+			.then(data => {
 				return data;
-			}).catch(err => {
+			})
+			.catch(err => {
 				console.info('ERROR: Erro ao frustrar a inspeção.');
 				console.error(err);
 			});
-	}
+	};
 
-	static concludeInspection = async (id) => {
+	static concludeInspection = async id => {
 		console.info(`Concluir inspeção [id=${id}]`);
 
 		const observation = await ObservationService.getInStorage(id);
 
-		return api.post(API.CONCLUDE_INSPECTION, {
-			inspection: { id },
-			observation: {
-				content: observation
-			}
-		}, {
-				headers: {
-					'Content-Type': 'application/json'
+		return api
+			.post(
+				API.CONCLUDE_INSPECTION,
+				{
+					inspection: { id },
+					observation: {
+						content: observation
+					}
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			}).then(data => {
+			)
+			.then(data => {
 				return data;
-			}).catch(err => {
+			})
+			.catch(err => {
 				console.info('ERROR: Erro ao concluir a inspeção.');
 				console.error(err);
 			});
-	}
+	};
 
-	static isPendencyValid = async (id) => {
+	static isPendencyValid = async id => {
 		const json = await AsyncStorage.getItem(MemoryFlags.form(id));
 		const data = JSON.parse(json);
 		let isValid = true;
+		const photosTemplate = await PhotosService.getPhotosTemplate(id);
+		const photos = await PhotosService.loadPhotosOfStorage(id);
 
 		// Verifica se há algum campo obrigatório
-		if (!!data) {
-			data.forEach((field, index) => {
-				field['errors'] = null;
-				if (field.isRequired) {
-					const key = FormUtils.getValueAsType(field.type);
-					// Verifica se o valor é nulo
-					if (!field[key]) {
-						isValid = false;
-						// Adiciona uma chave de erro 
-						PendenciesService.addErrorInField(field, 'required', true);
+		if (!!data || !!photosTemplate) {
+			if (!!data) {
+				data.forEach((field, index) => {
+					field['errors'] = null;
+					if (field.isRequired) {
+						const key = FormUtils.getValueAsType(field.type);
+						// Verifica se o valor é nulo
+						if (!field[key]) {
+							isValid = false;
+							// Adiciona uma chave de erro
+							PendenciesService.addErrorInField(
+								field,
+								'required',
+								true
+							);
+						}
 					}
-				}
-			});
+				});
+			}
+			if (!!photosTemplate) {
+				photosTemplate.photosTemplateItems.forEach(template => {
+					if (template.required) {
+						let found = false;
+						for ( var i = 0 ; i < photos.length; i++ ) {
+							const photo = photos[i];
+							if (!!photo.template && (photo.template.id === template.id)) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) {
+							PendenciesService.addErrorInPhotoTemplate(
+								template,
+								'required',
+								true
+							);
+							isValid = false;
+						}
+					}
+				});
+			}
 		} else {
 			isValid = false;
 		}
-		return {isValid, data};
-	}
+		return { isValid, data, photosTemplate };
+	};
 
 	static addErrorInField(field, flag, status) {
 		if (!field['errors']) {
 			field['errors'] = {};
 		}
-		Object.assign(field['errors'], {[flag]: status});
+		Object.assign(field['errors'], { [flag]: status });
 	}
 
-	static getFormData = async (id) => {
+	static addErrorInPhotoTemplate(template, flag, status) {
+		if (!template['errors']) {
+			template['errors'] = {};
+		}
+		Object.assign(template['errors'], { [flag]: status });
+	}
+
+	static getFormData = async id => {
 		const json = await AsyncStorage.getItem(MemoryFlags.form(id));
 		const data = JSON.parse(json);
 		return data;
-	}
+	};
 
 	static createForm = async (id, form) => {
 		const json = await AsyncStorage.getItem(MemoryFlags.form(id));
 		// Se não houver um formulário salvo
-		if (!(!!json)) {
+		if (!!!json) {
 			// salva um formulário vazio
 			AsyncStorage.setItem(MemoryFlags.form(id), JSON.stringify(form));
 		}
-	}
+	};
 }

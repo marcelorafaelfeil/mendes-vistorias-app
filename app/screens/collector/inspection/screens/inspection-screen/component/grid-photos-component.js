@@ -8,11 +8,13 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	View,
+	Text,
 	ActivityIndicator
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../../../../../theme/mendes-light';
 import styled from 'styled-components';
+import { PhotosService } from '../../../../../../services/rest/photos-service';
 
 const IMAGE_WIDTH = Dimensions.get('window').width / 2 - 10;
 const IMAGE_HEIGHT = Dimensions.get('window').width / 2 - 10;
@@ -30,9 +32,69 @@ const LoadingStyled = styled(ActivityIndicator)`
 
 @connectActionSheet
 export default class GridPhotosComponent extends Component {
+	state = {
+		itemsOfTemplate: [],
+		isLoading: false
+	};
+
+	componentWillMount = async () => {
+		// Template de fotos
+		const itemsOfTemplate = this.props.photosTemplate.photosTemplateItems;
+		const photos = this.props.photos;
+		for (var i = 0; i < photos.length; i++) {
+			const photo = photos[i];
+			for (var j = itemsOfTemplate.length-1; j >= 0; j--) {
+				const template = itemsOfTemplate[j];
+				if (!!photo.template && photo.template.id === template.id) {
+					itemsOfTemplate.splice(j, 1);
+					break;
+				}
+			}
+		}
+		// Inicialmente verifica se já existe alguma foto com o template
+		this.setState({ itemsOfTemplate });
+	};
+
+	componentWillReceiveProps() {
+		const itemsOfTemplate = this.props.photosTemplate.photosTemplateItems;
+		const photos = this.props.photos;
+		for (var i = 0; i < photos.length; i++) {
+			const photo = photos[i];
+			for (var j = itemsOfTemplate.length-1; j >= 0; j--) {
+				const template = itemsOfTemplate[j];
+				if (!!photo.template && photo.template.id === template.id) {
+					itemsOfTemplate.splice(j, 1);
+					break;
+				}
+			}
+		}
+		// Inicialmente verifica se já existe alguma foto com o template
+		this.setState({ itemsOfTemplate });
+	}
+
 	render() {
 		return (
 			<View style={styles.contentGrid}>
+				{this.state.itemsOfTemplate.map((template, index) => (
+					<TouchableOpacity
+						key={index}
+						onPress={() => this.openList(template)}
+					>
+						<View style={[styles.placeholder, styles.grid]}>
+							<Icon
+								name={
+									(Platform.OS === 'ios' ? 'ios' : 'md') +
+									'-add'
+								}
+								size={70}
+								style={styles.icon}
+							/>
+						</View>
+						<Text style={theme.photosTemplateDescription}>
+							{template.shortDescription}
+						</Text>
+					</TouchableOpacity>
+				))}
 				{this.props.photos.map((photo, index) => (
 					<TouchableOpacity
 						onPress={() => this.openImageOptions(index)}
@@ -48,9 +110,14 @@ export default class GridPhotosComponent extends Component {
 								}}
 							/>
 							{!!photo.loading && (
-								<LoadingStyled size="large" color="#0c9" />
+								<LoadingStyled size='large' color='#0c9' />
 							)}
 						</View>
+						{!!photo.template ? (
+							<Text style={theme.photosTemplateDescription}>
+								{photo.template.shortDescription}
+							</Text>
+						) : (null)}
 					</TouchableOpacity>
 				))}
 				<TouchableOpacity onPress={() => this.openList()}>
@@ -68,7 +135,7 @@ export default class GridPhotosComponent extends Component {
 		);
 	}
 
-	openList() {
+	openList(template) {
 		this.props.showActionSheetWithOptions(
 			{
 				options: ['Cancelar', 'Tirar foto', 'Escolher da biblioteca'],
@@ -76,9 +143,9 @@ export default class GridPhotosComponent extends Component {
 			},
 			buttonIndex => {
 				if (buttonIndex === 1) {
-					this.openCamera();
+					this.openCamera(template);
 				} else if (buttonIndex) {
-					this.openGallery();
+					this.openGallery(template);
 				}
 			}
 		);
@@ -105,19 +172,19 @@ export default class GridPhotosComponent extends Component {
 		}
 	}
 
-	openGallery = async () => {
+	openGallery = async template => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			exif: true
 		});
 
-		this.props.onFinish(result);
+		this.props.onFinish(result, template);
 	};
 
-	openCamera = async () => {
+	openCamera = async template => {
 		const result = await ImagePicker.launchCameraAsync({
 			exif: true
 		});
-		this.props.onFinish(result);
+		this.props.onFinish(result, template);
 	};
 }
 

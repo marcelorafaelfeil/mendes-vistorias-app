@@ -7,21 +7,24 @@ import { Header } from '../../../includes/header/header';
 import { Finish } from './finish';
 import { PendenciesService } from '../../../../../services/rest/pendencies-service';
 import { ErrorsPanel } from './errors-panel';
+import PhotosService from '../inspection-screen/services/photos-service';
 
 export default class SendScreen extends Component {
 	state = {
 		inspection: this.props.navigation.getParam('inspection'),
 		formData: [],
-		isValid: true
+		isValid: true,
+		photosTemplate: {}
 	};
 
 	componentWillMount = async () => {
 		const formData = await PendenciesService.getFormData(this.state.inspection);
-		this.setState({ formData });
+		const photosTemplate = await PhotosService.getPhotosTemplate(this.state.inspection);
+		this.setState({ formData, photosTemplate });
 	}
 
 	handleInvalidData = validation => {
-		this.setState({ formData: validation.data, isValid: validation.isValid });
+		this.setState({ formData: validation.data, photosTemplate: validation.photosTemplate, isValid: validation.isValid });
 	}
 
 	handleConclude = data => {
@@ -39,7 +42,7 @@ export default class SendScreen extends Component {
 	_renderErrorComponent() {
 		if (!this.state.isValid) {
 			if (!!this.state.formData) {
-				return <ErrorsPanel fields={this.state.formData} />;
+				return <ErrorsPanel fields={this.state.formData} photosTemplate={this.state.photosTemplate} />;
 			} else {
 				Alert.alert('Formulário', 'Não foi encontrado nenhum formulário. Acesse a tela "Geral" e preencha o formulário.');
 			}

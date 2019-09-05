@@ -14,11 +14,28 @@ export class ErrorsPanel extends React.Component {
 		}
 	}
 
-	_renderErrorLi = (field) => {
-		if (!!field.errors) {
+	_getMessagePhotoTemplate(error, field) {
+		if (error === 'required') {
+			return `A foto "${field.name}", é obrigatória.`;
+		}
+	}
+
+	_renderErrorLi = (item) => {
+		if (!!item.errors) {
 			return (
-				Object.keys(field.errors).map((e, index) => (
-					<Text style={theme.formError} key={index}>{this._getMessage(e, {name: field.name})}</Text>
+				Object.keys(item.errors).map((e, index) => (
+					<Text style={theme.formError} key={index}>{this._getMessage(e, {name: item.name})}</Text>
+				))
+			);
+		}
+	}
+
+	_renderErrorTemplate = (item) => {
+		console.log('item: ', item);
+		if (!!item.errors) {
+			return (
+				Object.keys(item.errors).map((e, index) => (
+					<Text style={theme.formError} key={index}>{this._getMessagePhotoTemplate(e, {name: item.shortDescription})}</Text>
 				))
 			);
 		}
@@ -26,6 +43,7 @@ export class ErrorsPanel extends React.Component {
 
 	render() {
 		if (!!this.props.fields && this.props.fields.length > 0) {
+			console.log(this.props.photosTemplate);
 			return (
 				<View>
 					<Panel>
@@ -39,6 +57,11 @@ export class ErrorsPanel extends React.Component {
 									data={this.props.fields}
 									keyExtractor={(item, index) => index.toString()}
 									renderItem={(item) => this._renderErrorLi(item.item)}
+								/>
+								<FlatList
+									data={!!this.props.photosTemplate ? this.props.photosTemplate.photosTemplateItems : []}
+									keyExtractor={(item, index) => index.toString()}
+									renderItem={(item) => this._renderErrorTemplate(item.item)}
 								/>
 							</View>
 						</PanelBody>

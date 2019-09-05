@@ -156,5 +156,11 @@ export const theme = StyleSheet.create({
 		color: '#F84949',
 		fontWeight: 'bold',
 		paddingLeft: 5
+	},
+	photosTemplateDescription: {
+		color: '#AAAAAA',
+		fontSize: 12,
+		textAlign: 'center',
+		marginBottom: 15
 	}
 });

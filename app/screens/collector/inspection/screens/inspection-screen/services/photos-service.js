@@ -3,6 +3,7 @@ import { API } from '../../../../../../core/api-context';
 import { BindVariable } from '../../../../../../utils/bind-variable';
 import { GetData } from '../../../../../../utils/get-data';
 import api from '../../../../../../services/interceptor/api';
+import { MemoryFlags } from '../../../../../../utils/memory-flags';
 
 export default class PhotosService {
 	static TAG_PHOTOS = 'inspection@photos@';
@@ -89,5 +90,16 @@ export default class PhotosService {
 		}).catch(err => {
 			console.error('Erro ao remover a foto do banco de dados.', err);
 		});
+	}
+
+	static savePhotosTemplate = (photosTemplate, inspection) => {
+		AsyncStorage.setItem(MemoryFlags.photosTemplate(inspection), JSON.stringify(photosTemplate));
+	}
+
+	static getPhotosTemplate = async(inspection) => {
+		const json = await AsyncStorage.getItem(MemoryFlags.photosTemplate(inspection));
+		const photosTemplate = JSON.parse(json);
+		console.log('Template: ', photosTemplate);
+		return photosTemplate;
 	}
 }
