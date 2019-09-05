@@ -9,6 +9,7 @@ import { Header } from '../../../includes/header/header';
 import { Address } from './address';
 import { Client } from './client';
 import PhotosService from '../inspection-screen/services/photos-service';
+import { Schedule } from './schedule';
 
 export class HomeScreen extends React.Component {
 	state = {
@@ -54,6 +55,7 @@ export class HomeScreen extends React.Component {
 								{pendency.client && pendency.client.address && (
 									<Address data={pendency.client.address} />
 								)}
+								<Schedule></Schedule>
 							</View>
 						)}
 					</ContainerComponent>
