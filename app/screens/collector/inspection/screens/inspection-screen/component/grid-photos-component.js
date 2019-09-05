@@ -39,7 +39,7 @@ export default class GridPhotosComponent extends Component {
 
 	componentWillMount = async () => {
 		// Template de fotos
-		const itemsOfTemplate = this.props.photosTemplate.photosTemplateItems;
+		const itemsOfTemplate = !!this.props.photosTemplate ? this.props.photosTemplate.photosTemplateItems : [];
 		const photos = this.props.photos;
 		for (var i = 0; i < photos.length; i++) {
 			const photo = photos[i];
