@@ -9,11 +9,12 @@ import { Header } from '../../../includes/header/header';
 import { Address } from './address';
 import { Client } from './client';
 import PhotosService from '../inspection-screen/services/photos-service';
-import { Schedule } from './schedule';
+import { Schedule } from './schedule/schedule';
 
 export class HomeScreen extends React.Component {
 	state = {
 		loaded: false,
+		inspection: this.props.navigation.getParam('inspection'),
 		pendency: {}
 	};
 
@@ -55,7 +56,7 @@ export class HomeScreen extends React.Component {
 								{pendency.client && pendency.client.address && (
 									<Address data={pendency.client.address} />
 								)}
-								<Schedule></Schedule>
+								<Schedule inspection={this.state.inspection}></Schedule>
 							</View>
 						)}
 					</ContainerComponent>

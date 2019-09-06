@@ -74,6 +74,7 @@ export const theme = StyleSheet.create({
 	},
 	inputGroupLabelIcon: {
 		backgroundColor: PRIMARY_COLOR,
+		minHeight: INPUT_HEIGHT,
 		padding: 10,
 		paddingLeft: 15,
 		paddingRight: 15,
@@ -156,6 +157,9 @@ export const theme = StyleSheet.create({
 		color: '#F84949',
 		fontWeight: 'bold',
 		paddingLeft: 5
+	},
+	formErrorModal: {
+		paddingLeft: 18
 	},
 	photosTemplateDescription: {
 		color: '#AAAAAA',

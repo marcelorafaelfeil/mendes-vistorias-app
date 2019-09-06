@@ -1,20 +1,11 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet';
-import * as ImagePicker from 'expo-image-picker';
 import { Platform } from '@unimodules/core';
+import * as ImagePicker from 'expo-image-picker';
 import React, { Component } from 'react';
-import {
-	Dimensions,
-	Image,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-	Text,
-	ActivityIndicator
-} from 'react-native';
+import { ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { theme } from '../../../../../../theme/mendes-light';
 import styled from 'styled-components';
-import { PhotosService } from '../../../../../../services/rest/photos-service';
+import { theme } from '../../../../../../theme/mendes-light';
 
 const IMAGE_WIDTH = Dimensions.get('window').width / 2 - 10;
 const IMAGE_HEIGHT = Dimensions.get('window').width / 2 - 10;

@@ -119,4 +119,14 @@ export class GetData {
 	static leadingZero(value) {
 		return (value < 10 ? '0' : '') + value;
 	}
+
+	static validateDate(date) {
+		try {
+			new Date(data);
+			return true;
+		} catch (e) {
+			console.warn('Data inválida');
+			return false;
+		}
+	}
 }

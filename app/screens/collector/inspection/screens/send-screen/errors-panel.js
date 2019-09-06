@@ -31,7 +31,6 @@ export class ErrorsPanel extends React.Component {
 	}
 
 	_renderErrorTemplate = (item) => {
-		console.log('item: ', item);
 		if (!!item.errors) {
 			return (
 				Object.keys(item.errors).map((e, index) => (
@@ -42,8 +41,8 @@ export class ErrorsPanel extends React.Component {
 	}
 
 	render() {
+		console.log('items.errors: ', this.props.fields);
 		if (!!this.props.fields && this.props.fields.length > 0) {
-			console.log(this.props.photosTemplate);
 			return (
 				<View>
 					<Panel>
