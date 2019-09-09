@@ -41,7 +41,6 @@ export class ErrorsPanel extends React.Component {
 	}
 
 	render() {
-		console.log('items.errors: ', this.props.fields);
 		if (!!this.props.fields && this.props.fields.length > 0) {
 			return (
 				<View>

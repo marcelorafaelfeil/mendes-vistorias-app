@@ -1,6 +1,14 @@
 import { Platform } from '@unimodules/core';
 import React from 'react';
-import { RefreshControl, FlatList, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import {
+	RefreshControl,
+	FlatList,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableHighlight,
+	View
+} from 'react-native';
 import { ContainerComponent } from '../../../components/container-component';
 import { CustomSafeView } from '../../../components/custom-safe-view';
 import { Empty } from '../../../components/empty';
@@ -45,6 +53,22 @@ export class DashboardScreen extends React.Component {
 	};
 
 	renderItem = (data, status) => {
+		const hasSchedule =
+			!!data.item &&
+			!!data.item.schedules &&
+			data.item.schedules.length > 0;
+		if (hasSchedule) {
+			if (data.item.time.quantity >= 2) {
+				status = 'success';
+			} else if (data.item.time.quantity >= 0) {
+				status = 'warning';
+			} else {
+				status = 'danger';
+			}
+		}
+		if (data.item.time.quantity < 0) {
+			data.item.time.quantity = data.item.time.quantity * (-1);
+		}
 		return (
 			<TouchableHighlight
 				onPress={() =>
@@ -59,6 +83,7 @@ export class DashboardScreen extends React.Component {
 					status={status}
 					time={data.item.time.quantity}
 					unit={data.item.unit}
+					schedule={hasSchedule}
 				/>
 			</TouchableHighlight>
 		);
@@ -88,7 +113,7 @@ export class DashboardScreen extends React.Component {
 				refreshing: false
 			});
 		});
-	}
+	};
 
 	render() {
 		if (this.state.loaded > 0) {
@@ -96,35 +121,51 @@ export class DashboardScreen extends React.Component {
 		} else {
 			return (
 				<CustomSafeView>
-					<ScrollView styles={styles.content} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}>
-						<ContainerComponent refreshing={this.state.refreshing} onRefresh={this.onRefresh}>
+					<ScrollView
+						styles={styles.content}
+						refreshControl={
+							<RefreshControl
+								refreshing={this.state.refreshing}
+								onRefresh={this.onRefresh}
+							/>
+						}
+					>
+						<ContainerComponent
+							refreshing={this.state.refreshing}
+							onRefresh={this.onRefresh}
+						>
 							<Header showSettings>Dashboard</Header>
 							{(!!this.state.latePendencies &&
 								this.state.latePendencies.length > 0) ||
-								(!!this.state.deadlinePendencies &&
-									this.state.deadlinePendencies.length > 0) ||
-								(!!this.state.newPendencies &&
-									this.state.newPendencies.length > 0) ? (
-									<View>
-										{this.renderPendencies(
-											'Inspeções atrasadas',
-											'danger',
-											this.state.latePendencies
-										)}
-										{this.renderPendencies(
-											'Inspeções a vencer',
-											'warning',
-											this.state.deadlinePendencies
-										)}
-										{this.renderPendencies(
-											'Novas inspeções',
-											'success',
-											this.state.newPendencies
-										)}
-									</View>
-								) : (
-									<Empty />
-								)}
+							(!!this.state.deadlinePendencies &&
+								this.state.deadlinePendencies.length > 0) ||
+							(!!this.state.newPendencies &&
+								this.state.newPendencies.length > 0) ? (
+								<View>
+									{this.renderPendencies(
+										'Inspeções agendadas',
+										'success',
+										this.state.schedulePendencies
+									)}
+									{this.renderPendencies(
+										'Inspeções atrasadas',
+										'danger',
+										this.state.latePendencies
+									)}
+									{this.renderPendencies(
+										'Inspeções a vencer',
+										'warning',
+										this.state.deadlinePendencies
+									)}
+									{this.renderPendencies(
+										'Novas inspeções',
+										'success',
+										this.state.newPendencies
+									)}
+								</View>
+							) : (
+								<Empty />
+							)}
 						</ContainerComponent>
 					</ScrollView>
 				</CustomSafeView>

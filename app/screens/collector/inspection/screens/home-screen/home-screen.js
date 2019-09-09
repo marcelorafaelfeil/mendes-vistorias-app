@@ -10,6 +10,7 @@ import { Address } from './address';
 import { Client } from './client';
 import PhotosService from '../inspection-screen/services/photos-service';
 import { Schedule } from './schedule/schedule';
+import { SchedulePanel } from './schedule/schedule-panel';
 
 export class HomeScreen extends React.Component {
 	state = {
@@ -19,22 +20,39 @@ export class HomeScreen extends React.Component {
 	};
 
 	async componentDidMount() {
-		const inspection = this.props.navigation.getParam('inspection');
-		await PendenciesService.getPendency(inspection).then(response => {
-			this.setState({
-				pendency: response
-			});
-			// Grava o template de fotos, em memória
-			if (!!response.insurerProduct && !!response.insurerProduct.product && !!response.insurerProduct.product.photosTemplate) {
-				const photosTemplate = response.insurerProduct.product.photosTemplate;
-				PhotosService.savePhotosTemplate(photosTemplate, inspection);
-			}
-		});
+		await this.getPendency();
 
 		this.setState({
 			loaded: true
 		});
 	}
+
+	async getPendency() {
+		const inspection = this.props.navigation.getParam('inspection');
+		return PendenciesService.getPendency(inspection).then(response => {
+			this.setState({
+				pendency: response
+			});
+			// Grava o template de fotos, em memória
+			if (
+				!!response.insurerProduct &&
+				!!response.insurerProduct.product &&
+				!!response.insurerProduct.product.photosTemplate
+			) {
+				const photosTemplate =
+					response.insurerProduct.product.photosTemplate;
+				PhotosService.savePhotosTemplate(photosTemplate, inspection);
+			}
+		});
+	}
+
+	onSchedule = async data => {
+		this.setState({ loaded: false });
+		await this.getPendency();
+		this.setState({
+			loaded: true
+		});
+	};
 
 	render() {
 		const { pendency } = this.state;
@@ -50,13 +68,27 @@ export class HomeScreen extends React.Component {
 						{!!pendency && (
 							<View>
 								<Header>Início</Header>
+								{!!pendency &&
+									!!pendency.schedules &&
+									pendency.schedules.length > 0 && (
+										<SchedulePanel
+											schedule={pendency.schedules[0]}
+										></SchedulePanel>
+									)}
 								{pendency.client && (
 									<Client data={pendency.client} />
 								)}
 								{pendency.client && pendency.client.address && (
 									<Address data={pendency.client.address} />
 								)}
-								<Schedule inspection={this.state.inspection}></Schedule>
+								{!!pendency &&
+									!!pendency.schedules &&
+									pendency.schedules.length === 0 && (
+										<Schedule
+											onSchedule={this.onSchedule}
+											inspection={this.state.inspection}
+										></Schedule>
+									)}
 							</View>
 						)}
 					</ContainerComponent>

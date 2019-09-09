@@ -22,11 +22,13 @@ export class PendenciesService {
 					const latePendencies = formatter.getLatePendencies();
 					const deadlinePendencies = formatter.getDeadlineRiskPendencies();
 					const newPendencies = formatter.getNewPendencies();
+					const schedulePendencies = formatter.getSchedulePendencies();
 
 					return {
-						latePendencies: latePendencies,
-						deadlinePendencies: deadlinePendencies,
-						newPendencies: newPendencies
+						latePendencies,
+						deadlinePendencies,
+						newPendencies,
+						schedulePendencies
 					};
 				}
 				return {
@@ -176,6 +178,7 @@ export class PendenciesService {
 						const key = FormUtils.getValueAsType(field.type);
 						// Verifica se o valor é nulo
 						if (!field[key]) {
+							console.log('caiu aqui 1', key, field);
 							isValid = false;
 							// Adiciona uma chave de erro
 							PendenciesService.addErrorInField(
@@ -209,7 +212,8 @@ export class PendenciesService {
 					}
 				});
 			}
-		} else {
+		} else if (!!!data) {
+			console.log('caiu aqui');
 			isValid = false;
 		}
 		return { isValid, data, photosTemplate };

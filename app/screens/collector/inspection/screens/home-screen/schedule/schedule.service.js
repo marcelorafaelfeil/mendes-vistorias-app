@@ -17,14 +17,14 @@ export class ScheduleService {
 	
 	static saveSchedule = async (schedule, id) => {
 		console.info(`Salvar agendamento [schedule=${schedule}, id=${id}]`);
-		console.log('schedule: ', schedule);
+		const params = {
+			scheduleDate: !!schedule.scheduleValue ? schedule.scheduleValue : null,
+			inspection: {id}
+		};
 		return api
 			.post(
 				API.SAVE_SCHEDULE,
-				{
-					inspection: { id },
-					schedule
-				},
+				params,
 				{
 					headers: {
 						'Content-Type': 'application/json'

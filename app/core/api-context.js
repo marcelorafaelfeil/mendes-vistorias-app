@@ -14,5 +14,5 @@ export const API = {
 	FRUSTRATE_INSPECTION: `${API_CONTEXT}/app/inspection/frustrate`,
 	GET_FORM_BY_INSPECTION: `${API_CONTEXT}/inspection/formBuilder`,
 	GET_FORM_VALUES_BY_INSPECTION: `${API_CONTEXT}/inspection/formValues`,
-	SAVE_SCHEDULE: `${API_CONTEXT}/schedule/saveSchedule`
+	SAVE_SCHEDULE: `${API_CONTEXT}/inspection/schedule`
 }; 

@@ -41,6 +41,9 @@ export class Schedule extends React.Component {
 			this.closeModal();
 			const schedule = this.state.scheduleForm;
 			ScheduleService.saveSchedule(schedule, this.props.inspection)
+			if (!!this.props.onSchedule) {
+				this.props.onSchedule(schedule);
+			}
 		}else {
 			this.setState({errors});
 		}

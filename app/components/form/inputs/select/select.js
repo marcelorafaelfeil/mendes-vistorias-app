@@ -53,6 +53,12 @@ export class Select extends React.Component {
 	}
 
 	renderPicker(options) {
+		if (!!this.props.placeholder) {
+			options.unshift({
+				label: this.props.placeholder,
+				value: null
+			});
+		}
 		return (
 			<Picker
 				style={Platform.OS === 'android' ? theme.pickerAndroid : null}
@@ -60,13 +66,16 @@ export class Select extends React.Component {
 					!!this.state.value ? this.state.value.value : null
 				}
 				onValueChange={(itemValue, itemIndex) => {
-					this.setState({
-						value: options[itemIndex]
-					}, () => {
-						if (Platform.OS === 'android') {
-							this.selectOption();
+					this.setState(
+						{
+							value: options[itemIndex]
+						},
+						() => {
+							if (Platform.OS === 'android') {
+								this.selectOption();
+							}
 						}
-					});
+					);
 				}}
 			>
 				{options.map((o, index) => (
@@ -161,10 +170,10 @@ export class Select extends React.Component {
 						</Modal>
 					</View>
 				) : (
-						<View style={theme.pickerAndroidContainer}>
-							{this.renderPicker(options)}
-						</View>
-					)}
+					<View style={theme.pickerAndroidContainer}>
+						{this.renderPicker(options)}
+					</View>
+				)}
 			</View>
 		);
 	}

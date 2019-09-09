@@ -99,7 +99,6 @@ export default class PhotosService {
 	static getPhotosTemplate = async(inspection) => {
 		const json = await AsyncStorage.getItem(MemoryFlags.photosTemplate(inspection));
 		const photosTemplate = JSON.parse(json);
-		console.log('Template: ', photosTemplate);
 		return photosTemplate;
 	}
 }

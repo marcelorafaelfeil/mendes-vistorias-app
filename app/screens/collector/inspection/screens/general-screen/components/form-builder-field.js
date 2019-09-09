@@ -170,6 +170,7 @@ export class FormBuilderField extends React.Component {
 		return (<Select
 			options={options}
 			value={this.state.value}
+			placeholder={'Selecione uma opção'}
 			onSelect={(value) => { this.setState({value}); this.props.onChange(attrs, value) }}
 		/>);
 	}

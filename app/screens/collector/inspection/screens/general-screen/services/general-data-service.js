@@ -60,7 +60,6 @@ export class GeneralDataService {
 			JSON.stringify(data)
 		);
 
-		//console.log('params: ', params);
 		return api
 			.put(API.SYNC_WITH_SYSTEM, params, {
 				cancelToken: GeneralDataService.cancelToken.token

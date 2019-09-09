@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LoadFontService } from '../../services/fonts/load-font-service';
 import { Loading } from '../loading/loading';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { Platform } from '@unimodules/core';
 
 export class ListItem extends React.Component {
-
 	state = {
 		loaded: false
 	};
@@ -17,25 +17,41 @@ export class ListItem extends React.Component {
 
 	_numberColor = () => {
 		return this.props.status === 'danger'
-		? styles.dangerText
-		: this.props.status === 'warning'
+			? styles.dangerText
+			: this.props.status === 'warning'
 			? styles.warningText
 			: styles.successText;
-	}
+	};
 
 	render() {
 		if (!this.state.loaded) {
-			return (<Loading></Loading>);
+			return <Loading></Loading>;
 		}
 		return (
 			<View style={styles.item}>
 				<View style={styles.nameAndAddress}>
-					<Text numberOfLines={1} style={styles.label}>{this.props.label}</Text>
-					<Text numberOfLines={1} style={styles.description}>{this.props.description}</Text>
+					<View>
+						<Text numberOfLines={1} style={styles.label}>
+							{this.props.label}
+						</Text>
+					</View>
+					<Text numberOfLines={1} style={styles.description}>
+						{this.props.description}
+					</Text>
 				</View>
 				<View style={styles.timeToExpire}>
-					<Text style={[styles.textCenter, styles.strong, this._numberColor()]}>{this.props.time}</Text>
-					<Text style={[styles.textCenter, styles.description]}>{this.props.unit}</Text>
+					<Text
+						style={[
+							styles.textCenter,
+							styles.strong,
+							this._numberColor()
+						]}
+					>
+						{this.props.time}
+					</Text>
+					<Text style={[styles.textCenter, styles.description]}>
+						{this.props.unit}
+					</Text>
 				</View>
 			</View>
 		);
